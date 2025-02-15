@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from api.models import WMS_User, Store, Product, PickupOrder, Reward, Image
 from api.models import User
+from django.contrib.auth.hashers import check_password
+
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -34,6 +36,40 @@ class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password']
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields = ['id','email','full_name','user_role','is_active','password']
+
+class UserChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(max_length=255, write_only=True)
+    new_password = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
+    new_password2 = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
+    
+    class Meta:
+        fields = ['old_password', 'new_password', 'new_password2']
+
+#validate password
+    def validate(self, attrs):
+        old_password = attrs.get('old_password')  # Retrieve old_password correctly
+        password = attrs.get('new_password')
+        password2 = attrs.get('new_password2')
+        user = self.context.get('user')
+        
+        if not check_password(old_password, user.password):
+            raise serializers.ValidationError("Old password is incorrect")
+
+        if password !=password2:
+            raise serializers.ValidationError("Password and Confirm Password does not match")
+
+        elif password == old_password:
+            raise serializers.ValidationError("Old and New Password cannot be same")
+
+        user.set_password(password)
+        user.save()
+
+        return attrs
 
 # User Serializer
 class WMSUserSerializer(serializers.ModelSerializer):
