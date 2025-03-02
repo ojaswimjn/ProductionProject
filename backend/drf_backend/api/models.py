@@ -79,6 +79,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
+# Image Model
+class Image(models.Model):
+    image_id = models.AutoField(primary_key=True)
+    created_date = models.DateField(auto_now_add=True)
+    image_type = models.CharField(max_length=50)
+    # user = models.ForeignKey(WMS_User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Image {self.image_id} of Product {self.product.product_name}"
+
+
 # User Model
 class WMS_User(models.Model):
     user_id = models.BigAutoField(primary_key=True)
@@ -105,13 +117,22 @@ class Store(models.Model):
         return f"Store {self.store_id}"
 
 # Product Model
-class Product(models.Model):
-    product_id = models.AutoField(primary_key=True)
-    product_name = models.CharField(max_length=30)
-    product_description = models.TextField(max_length=200)
+class WasteItem(models.Model):
+    waste_item_image_id = models.AutoField(primary_key=True)
+    accuracy_score = models.FloatField()
+    identified_date = models.DateTimeField(default=now)
+    waste_category = models.ForeignKey()
 
     def __str__(self):
         return self.product_name
+
+#Waste Category
+class WasteCategory(models.Model):
+    category_id = models.AutoField(primary_key=True)
+    category_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.category_name
 
 # Pickup Order Model
 class PickupOrder(models.Model):
@@ -137,14 +158,5 @@ class Reward(models.Model):
     def __str__(self):
         return f"Reward {self.reward_id}"
 
-# Image Model
-class Image(models.Model):
-    image_id = models.AutoField(primary_key=True)
-    created_date = models.DateField(auto_now_add=True)
-    image_type = models.CharField(max_length=50)
-    # user = models.ForeignKey(WMS_User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"Image {self.image_id} of Product {self.product.product_name}"
 
