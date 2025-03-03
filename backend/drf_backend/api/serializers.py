@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import WMS_User, Store, Product, PickupOrder, Reward, Image
+from api.models import WMS_User, Store, PickupOrder, Reward, Image, WasteItem, WasteCategory
 from api.models import User
 from django.contrib.auth.hashers import check_password
 
@@ -83,10 +83,16 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = '__all__'
 
-# Product Serializer
-class ProductSerializer(serializers.ModelSerializer):
+# WasteItem Serializer
+class WasteItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = WasteItem
+        fields = '__all__'
+
+# WasteCategory Serializer
+class WasteCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WasteCategory
         fields = '__all__'
 
 # Pickup Order Serializer

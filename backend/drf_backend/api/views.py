@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from .models import WMS_User, Store, Product, PickupOrder, Reward, Image
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer,  WMSUserSerializer, StoreSerializer, ProductSerializer, PickupOrderSerializer, RewardSerializer, ImageSerializer
+from .models import WMS_User, Store, WasteItem, WasteCategory, PickupOrder, Reward, Image
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer,  WMSUserSerializer,WasteItemSerializer,  WasteCategorySerializer, StoreSerializer, PickupOrderSerializer, RewardSerializer, ImageSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
@@ -73,10 +73,15 @@ class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
 
-# Product ViewSet
-class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+# WasteItem ViewSet
+class WasteItemViewSet(viewsets.ModelViewSet):
+    queryset = WasteItem.objects.all()
+    serializer_class = WasteItemSerializer
+
+# WasteItem ViewSet
+class WasteCategoryViewSet(viewsets.ModelViewSet):
+    queryset = WasteCategory.objects.all()
+    serializer_class = WasteCategorySerializer
 
 # Pickup Order ViewSet
 class PickupOrderViewSet(viewsets.ModelViewSet):

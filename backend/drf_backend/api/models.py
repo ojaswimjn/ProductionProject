@@ -85,10 +85,11 @@ class Image(models.Model):
     created_date = models.DateField(auto_now_add=True)
     image_type = models.CharField(max_length=50)
     # user = models.ForeignKey(WMS_User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Image {self.image_id} of Product {self.product.product_name}"
+        return f"Image {self.image_id}"
+
+        # return f"Image {self.image_id} of Product {self.product.product_name}"
 
 
 # User Model
@@ -116,16 +117,6 @@ class Store(models.Model):
     def __str__(self):
         return f"Store {self.store_id}"
 
-# Product Model
-class WasteItem(models.Model):
-    waste_item_image_id = models.AutoField(primary_key=True)
-    accuracy_score = models.FloatField()
-    identified_date = models.DateTimeField(default=now)
-    waste_category = models.ForeignKey()
-
-    def __str__(self):
-        return self.product_name
-
 #Waste Category
 class WasteCategory(models.Model):
     category_id = models.AutoField(primary_key=True)
@@ -133,6 +124,18 @@ class WasteCategory(models.Model):
 
     def __str__(self):
         return self.category_name
+        
+# Product Model
+class WasteItem(models.Model):
+    waste_item_image_id = models.AutoField(primary_key=True)
+    accuracy_score = models.FloatField()
+    identified_date = models.DateTimeField(default=now)
+    waste_category = models.ForeignKey(WasteCategory, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.product_name
+
+
 
 # Pickup Order Model
 class PickupOrder(models.Model):
