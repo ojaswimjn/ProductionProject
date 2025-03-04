@@ -80,13 +80,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+# lets us explicitly set upload path and filename
+def upload_to(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f"{instance.user_id.id}_{timezone.now().strftime('%Y%m%d%H%M%S')}.{ext}"
+    return 'images/{filename}'.format(filename=filename)
 
 # Image Model
 class Image(models.Model):
     image_id = models.AutoField(primary_key=True)
     created_date = models.DateField(auto_now_add=True)
     image_type = models.CharField(max_length=50)
-    # user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image_file_url = models.ImageField(upload_to=upload_to, blank=True, null=True)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     def __str__(self):
         return f"Image {self.image_id}"
 

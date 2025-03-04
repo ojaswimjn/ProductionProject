@@ -8,8 +8,10 @@ from django.contrib.auth import authenticate
 from api.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
+from rest_framework.parsers import MultiPartParser, FormParser
 
-#generate tojen manually
+#generate token manually
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -48,7 +50,7 @@ class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        serializer = UserProfileSerializer(request.user)
+        sewrializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserChangePasswordView(APIView):    
@@ -62,10 +64,24 @@ class UserChangePasswordView(APIView):
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
 
+#Image
+class ImageUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+    def post(self, request, format=None):
+        image_file = reque
+
+
+    # def post(self, request, format=None):
+
 # Image ViewSet
-class ImageViewSet(viewsets.ModelViewSet):
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
+# class ImageViewSet(viewsets.ModelViewSet):
+#     queryset = Image.objects.all()
+#     serializer_class = ImageSerializer
 
 # WasteItem ViewSet
 class WasteCategoryViewSet(viewsets.ModelViewSet):
