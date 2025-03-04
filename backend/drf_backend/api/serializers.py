@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import WMS_User, Store, PickupOrder, Reward, Image, WasteItem, WasteCategory
+from api.models import  Store, PickUpSlot, Reward, Image, WasteItem, WasteCategory, PickupRequest, Reedemption
 from api.models import User
 from django.contrib.auth.hashers import check_password
 
@@ -71,22 +71,10 @@ class UserChangePasswordSerializer(serializers.Serializer):
 
         return attrs
 
-# User Serializer
-class WMSUserSerializer(serializers.ModelSerializer):
+# Image Serializer
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WMS_User
-        fields = '__all__'
-
-# Store Serializer
-class StoreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Store
-        fields = '__all__'
-
-# WasteItem Serializer
-class WasteItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WasteItem
+        model = Image
         fields = '__all__'
 
 # WasteCategory Serializer
@@ -95,10 +83,22 @@ class WasteCategorySerializer(serializers.ModelSerializer):
         model = WasteCategory
         fields = '__all__'
 
-# Pickup Order Serializer
-class PickupOrderSerializer(serializers.ModelSerializer):
+# WasteItem Serializer
+class WasteItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PickupOrder
+        model = WasteItem
+        fields = '__all__'
+
+# Pickup Order Serializer
+class PickUpRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PickupRequest
+        fields = '__all__'
+
+# Pickup Order Serializer
+class PickUpSlotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PickUpSlot
         fields = '__all__'
 
 # Reward Serializer
@@ -107,8 +107,15 @@ class RewardSerializer(serializers.ModelSerializer):
         model = Reward
         fields = '__all__'
 
-# Image Serializer
-class ImageSerializer(serializers.ModelSerializer):
+#Reedemption Serializer
+class ReedemptionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Image
+        model = Reedemption
+        fields = '__all__'
+
+
+# Store Serializer
+class StoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
         fields = '__all__'

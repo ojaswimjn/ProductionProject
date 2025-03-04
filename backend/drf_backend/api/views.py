@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from .models import WMS_User, Store, WasteItem, WasteCategory, PickupOrder, Reward, Image
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer,  WMSUserSerializer,WasteItemSerializer,  WasteCategorySerializer, StoreSerializer, PickupOrderSerializer, RewardSerializer, ImageSerializer
+from .models import  Store, WasteItem, WasteCategory, PickUpSlot, Reward, Image, PickupRequest, Reedemption
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer ,WasteItemSerializer,  WasteCategorySerializer, StoreSerializer, PickUpSlotSerializer, RewardSerializer, ImageSerializer, PickUpRequestSerializer, ReedemptionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
@@ -62,38 +62,43 @@ class UserChangePasswordView(APIView):
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
 
+# Image ViewSet
+class ImageViewSet(viewsets.ModelViewSet):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
 
-# User ViewSet
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = WMS_User.objects.all()
-    serializer_class = WMSUserSerializer
-
-# Store ViewSet
-class StoreViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all()
-    serializer_class = StoreSerializer
+# WasteItem ViewSet
+class WasteCategoryViewSet(viewsets.ModelViewSet):
+    queryset = WasteCategory.objects.all()
+    serializer_class = WasteCategorySerializer  
 
 # WasteItem ViewSet
 class WasteItemViewSet(viewsets.ModelViewSet):
     queryset = WasteItem.objects.all()
     serializer_class = WasteItemSerializer
 
-# WasteItem ViewSet
-class WasteCategoryViewSet(viewsets.ModelViewSet):
-    queryset = WasteCategory.objects.all()
-    serializer_class = WasteCategorySerializer
+#PickUp Request ViewSet
+class PickupRequestViewSet(viewsets.ModelViewSet):
+    queryset = PickupRequest.objects.all()
+    serializer_class = PickUpRequestSerializer
 
 # Pickup Order ViewSet
-class PickupOrderViewSet(viewsets.ModelViewSet):
-    queryset = PickupOrder.objects.all()
-    serializer_class = PickupOrderSerializer
+class PickUpSlotViewSet(viewsets.ModelViewSet):
+    queryset = PickUpSlot.objects.all()
+    serializer_class = PickUpSlotSerializer
 
 # Reward ViewSet
 class RewardViewSet(viewsets.ModelViewSet):
     queryset = Reward.objects.all()
     serializer_class = RewardSerializer
 
-# Image ViewSet
-class ImageViewSet(viewsets.ModelViewSet):
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
+#Reedemption ViewSet
+class ReedemptionViewset(viewsets.ModelViewSet):
+    queryset = Reedemption.objects.all()
+    serializer_class = ReedemptionSerializer
+
+# Store ViewSet
+class StoreViewSet(viewsets.ModelViewSet):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+

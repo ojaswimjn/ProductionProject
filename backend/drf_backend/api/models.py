@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.timezone import now
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.conf import settings
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, tc,full_name, user_role, password=None, password2=None):
@@ -84,31 +86,82 @@ class Image(models.Model):
     image_id = models.AutoField(primary_key=True)
     created_date = models.DateField(auto_now_add=True)
     image_type = models.CharField(max_length=50)
-    # user = models.ForeignKey(WMS_User, on_delete=models.CASCADE)
-
+    # user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     def __str__(self):
         return f"Image {self.image_id}"
 
-        # return f"Image {self.image_id} of Product {self.product.product_name}"
-
-
-# User Model
-class WMS_User(models.Model):
-    user_id = models.BigAutoField(primary_key=True)
-    # full_name = models.CharField(max_length=100)
-    # user_role = models.CharField(max_length=40)
-    # email = models.EmailField(unique=True, max_length=100, default="example@example.com")
-    # contact_no = models.CharField(max_length=50, blank=True, null=True)
-    # created_date = models.DateField(default=now)
-    # updated_date = models.DateField(default=now)
-    # date_of_birth = models.DateTimeField(blank=True, null=True)
-    # status = models.BooleanField(default=True)
-    username = models.CharField(max_length=50, unique=True)
-    # user_photo = models.CharField(max_length=100, blank=True, null=True)
-    # verification_code = models.CharField(max_length=255, blank=True, null=True)
+#Waste Category
+class WasteCategory(models.Model):
+    category_id = models.AutoField(primary_key=True)
+    category_name = models.CharField(max_length=50)
+    description = models.CharField(max_length=500,  null=True)
 
     def __str__(self):
-        return self.username
+        return self.category_name
+
+# WasteItem Model
+class WasteItem(models.Model):
+    waste_item_id = models.AutoField(primary_key=True)
+    accuracy_score = models.FloatField()
+    identified_date = models.DateTimeField(default=now)
+    waste_category = models.ForeignKey(WasteCategory, on_delete=models.CASCADE)
+    image_id = models.ForeignKey(Image, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.waste_item_id
+
+
+# Pickup Order Model
+class PickupRequest(models.Model):
+    pickup_request_id = models.AutoField(primary_key=True)
+    request_date = models.DateField()
+    request_status= models.CharField(max_length=50)
+    weight = models.CharField(max_length=20)
+    waste_type = models.CharField(max_length=20)
+    latitude= models.FloatField()
+    longitude = models.FloatField()
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Pickup Order {self.pickup_request_id}"
+
+#PickUp Collection Slot Model
+class PickUpSlot(models.Model):
+    slot_id = models.AutoField(primary_key=True)
+    slot_date = models.DateField()
+    slot_time = models.TimeField()
+    status = models.CharField(max_length=50)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    pickup_request_id = models.ForeignKey(PickupRequest, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return f"Pickup Slot {self.slot_id}"
+
+# Reward Model
+class Reward(models.Model):
+    reward_id = models.AutoField(primary_key=True)
+    request_date = models.DateField()
+    reward_status = models.CharField(max_length=50)
+    expiry_date = models.DateTimeField()
+    description = models.CharField(max_length=250, null=True)
+    # user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Reward {self.reward_id}"
+
+
+#Reedemption Model
+class Reedemption(models.Model):
+    reedemption_id = models.AutoField(primary_key=True)
+    reedemption_date = models.DateField()
+    points_reedemed= models.FloatField()
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    reward_id = models.ForeignKey(Reward, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Reedemption {self.reedemption_id}"
+
 
 # Store Model
 class Store(models.Model):
@@ -116,50 +169,6 @@ class Store(models.Model):
 
     def __str__(self):
         return f"Store {self.store_id}"
-
-#Waste Category
-class WasteCategory(models.Model):
-    category_id = models.AutoField(primary_key=True)
-    category_name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.category_name
-        
-# Product Model
-class WasteItem(models.Model):
-    waste_item_image_id = models.AutoField(primary_key=True)
-    accuracy_score = models.FloatField()
-    identified_date = models.DateTimeField(default=now)
-    waste_category = models.ForeignKey(WasteCategory, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.product_name
-
-
-
-# Pickup Order Model
-class PickupOrder(models.Model):
-    pickup_order_id = models.AutoField(primary_key=True)
-    request_date = models.DateField()
-    request_status= models.CharField(max_length=50)
-    pickup_date = models.DateTimeField()
-    weight = models.CharField(max_length=20)
-    waste_type = models.CharField(max_length=20)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Pickup Order {self.pickup_order_id}"
-
-# Reward Model
-class Reward(models.Model):
-    reward_id = models.AutoField(primary_key=True)
-    request_date = models.DateField()
-    request_status = models.CharField(max_length=50)
-    pickup_date = models.DateTimeField()
-    # user = models.ForeignKey(WMS_User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Reward {self.reward_id}"
 
 
 
