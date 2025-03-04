@@ -75,7 +75,8 @@ class UserChangePasswordSerializer(serializers.Serializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = '__all__'
+        fields = ['image_id','created_date','image_file_url','user_id']
+        read_only_fields = ['image_id','created_date']
 
 # WasteCategory Serializer
 class WasteCategorySerializer(serializers.ModelSerializer):

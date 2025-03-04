@@ -1,7 +1,7 @@
 from django.urls import path
 # from api.views import UserViewSet
 # from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, UserChangePasswordView
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, UserChangePasswordView, ImageUploadView
 
 # router = routers.DefaultRouter()
 # router.register(r'users', UserViewSet)
@@ -13,6 +13,7 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name= 'login'),
     path('profile/', UserProfileView.as_view(), name= 'profile'),
     path('changepassword/', UserChangePasswordView.as_view(), name= 'changepassword'),
+    path('uploadimage/', ImageUploadView.as_view(), name='uploadimage'),
 
 
 ]

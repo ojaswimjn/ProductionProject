@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 
+
 #generate token manually
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -50,7 +51,7 @@ class UserProfileView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        sewrializer = UserProfileSerializer(request.user)
+        serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserChangePasswordView(APIView):    
@@ -72,8 +73,23 @@ class ImageUploadView(APIView):
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
 
+    #post
     def post(self, request, format=None):
-        image_file = reque
+        data = request.data.copy()  # Create a mutable copy of request data
+        data['user_id'] = request.user.id  # Set user ID from token
+
+        serializer = ImageSerializer(data= data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'sucess': 'Image uploaded successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    #get
+    def get(self, request, format=None):
+        images = Image.objects.filter(user_id=request.user)
+        serializer = ImageSerializer(images, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
 
     # def post(self, request, format=None):
