@@ -78,6 +78,15 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ['image_id','created_date','image_file_url','user_id']
         read_only_fields = ['image_id','created_date']
 
+#WasteItemDetailSerializer
+class WasteItemDetailSerializer(serializers.ModelSerializer):
+    waste_category = serializers.CharField(source='WasteCategory.category_name')
+    image_file_url = serializers.CharField(source='image_id.image_file_url')
+
+    class Meta:
+        model = WasteItem
+        fields = ['waste_item_id','accuracy_score','identified_date','waste_category','image_file_url']
+
 # WasteCategory Serializer
 class WasteCategorySerializer(serializers.ModelSerializer):
     class Meta:
