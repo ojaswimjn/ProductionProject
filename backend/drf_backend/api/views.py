@@ -95,56 +95,56 @@ class ImageUploadView(APIView):
 
     # def post(self, request, format=None):
 
-# Image ViewSet
+#Image ViewSet
 # class ImageViewSet(viewsets.ModelViewSet):
 #     queryset = Image.objects.all()
 #     serializer_class = ImageSerializer
 
-# class WasteItemPredictionView(APIView):
-#     permission_classes = [IsAuthenticated]
+class WasteItemPredictionView(APIView):
+    permission_classes = [IsAuthenticated]
 
-#     def get(self, request, image_id, format=None):
-#         try:
-#             image = Image.objects.get(image_id=image_id)
+    def get(self, request, image_id, format=None):
+        try:
+            image = Image.objects.get(image_id=image_id)
 
         
-#             predicted_class_index,accuracy_score = predict_image(image.image_file_url.path)
+            predicted_class_index,accuracy_score = predict_image(image.image_file_url.path)
 
-#             try:
-#                 waste_category = WasteCategory.objects.get(category_id= predcited_class_index)
-#             except WasteCategory.DoesNotExist:
-#                 return Response(
-#                     {'error': f'WasteCategory with ID {predicted_class_index} does not exist'},
-#                     status=status.HTTP_404_NOT_FOUND
-#                 )
+            try:
+                waste_category = WasteCategory.objects.get(category_id= predcited_class_index)
+            except WasteCategory.DoesNotExist:
+                return Response(
+                    {'error': f'WasteCategory with ID {predicted_class_index} does not exist'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
             
-#              # Get or create the corresponding WasteItem
-#             waste_item, created = WasteItem.objects.get_or_create(
-#                 image_id=image,
-#                 defaults={
-#                     'accuracy_score': accuracy_score,
-#                     'category_id': waste_category
-#                 }
-#             )
+             # Get or create the corresponding WasteItem
+            waste_item, created = WasteItem.objects.get_or_create(
+                image_id=image,
+                defaults={
+                    'accuracy_score': accuracy_score,
+                    'category_id': waste_category
+                }
+            )
 
-#             # If the WasteItem already exists, update its fields
-#             if not created:
-#                 waste_item.accuracy_score = accuracy_score
-#                 waste_item.category_id = waste_category
-#                 waste_item.save()
+            # If the WasteItem already exists, update its fields
+            if not created:
+                waste_item.accuracy_score = accuracy_score
+                waste_item.category_id = waste_category
+                waste_item.save()
 
-#             response_data = {
-#                 'image_id': image.image_id,
-#                 'image_url': image.image_file_url.url,
-#                 'waste_category_name': waste_category.category_name,
-#                 'predicted_class_index': waste_category.category_id,
-#                 'accuracy_score': waste_item.accuracy_score
-#             }
+            response_data = {
+                'image_id': image.image_id,
+                'image_url': image.image_file_url.url,
+                'waste_category_name': waste_category.category_name,
+                'predicted_class_index': waste_category.category_id,
+                'accuracy_score': waste_item.accuracy_score
+            }
 
-#             return Response(response_data, status=status.HTTP_200_OK)
+            return Response(response_data, status=status.HTTP_200_OK)
 
-#         except Image.DoesNotExist:
-#             return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Image.DoesNotExist:
+            return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
         
 
 # WasteItem ViewSet
