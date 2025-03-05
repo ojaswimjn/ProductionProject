@@ -1,0 +1,6 @@
+# Ignore Python virtual environment
+backend/drf_backend/venv/
+
+# Ignore specific large files
+backend/drf_backend/venv/Lib/site-packages/clang/native/libclang.dll
+backend/drf_backend/venv/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd
