@@ -8,3 +8,16 @@ backend/drf_backend/venv/Lib/site-packages/tensorflow/
 ai/trained_model.h5
 backend/drf_backend/venv/Lib/site-packages/clang/native/libclang.dll
 backend/drf_backend/venv/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd
+# Ignore Python virtual environment
+backend/drf_backend/venv/
+
+# Ignore AI models and large files
+ai/mymodel.keras
+ai/trained_model.h5
+
+# Ignore TensorFlow binaries
+backend/drf_backend/venv/Lib/site-packages/tensorflow/
+
+# Ignore specific DLLs
+backend/drf_backend/venv/Lib/site-packages/numpy.libs/
+backend/drf_backend/venv/Lib/site-packages/clang/native/libclang.dll
