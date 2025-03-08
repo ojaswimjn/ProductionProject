@@ -107,14 +107,17 @@ class WasteItemPredictionView(APIView):
         try:
             image = Image.objects.get(image_id=image_id)
 
-        
-            predicted_class_index,accuracy_score = predict_image(image.image_file_url.path)
+            predicted_category_id,accuracy_score = predict_image(image.image_file_url.path)
+
+            
+            print(f"Predicted category ID: {predicted_category_id}")
+
 
             try:
-                waste_category = WasteCategory.objects.get(category_id= predcited_class_index)
+                waste_category = WasteCategory.objects.get(category_id= predicted_category_id)
             except WasteCategory.DoesNotExist:
                 return Response(
-                    {'error': f'WasteCategory with ID {predicted_class_index} does not exist'},
+                    {'error': f'WasteCategory with ID {predicted_category_id} does not exist'},
                     status=status.HTTP_404_NOT_FOUND
                 )
             
@@ -136,7 +139,7 @@ class WasteItemPredictionView(APIView):
             response_data = {
                 'image_id': image.image_id,
                 'image_url': image.image_file_url.url,
-                'waste_category_name': waste_category.category_name,
+                'category_name': waste_category.category_name,
                 'predicted_class_index': waste_category.category_id,
                 'accuracy_score': waste_item.accuracy_score
             }
@@ -151,6 +154,14 @@ class WasteItemPredictionView(APIView):
 class WasteCategoryViewSet(viewsets.ModelViewSet):
     queryset = WasteCategory.objects.all()
     serializer_class = WasteCategorySerializer  
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+        except Http404:
+            pass
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # WasteItem ViewSet
 class WasteItemViewSet(viewsets.ModelViewSet):

@@ -111,7 +111,7 @@ class WasteItem(models.Model):
     waste_item_id = models.AutoField(primary_key=True)
     accuracy_score = models.FloatField(null=True, blank=True)
     identified_date = models.DateTimeField(default=now)
-    waste_category = models.ForeignKey(WasteCategory, on_delete=models.CASCADE)
+    category_id = models.ForeignKey(WasteCategory, on_delete=models.CASCADE)
     image_id = models.ForeignKey(Image, on_delete=models.CASCADE)
 
     def __str__(self):

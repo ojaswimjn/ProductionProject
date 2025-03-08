@@ -5,6 +5,8 @@ from api.views import UserRegistrationView, UserLoginView, UserProfileView, User
 
 router = routers.DefaultRouter()
 router.register(r'waste-category', WasteCategoryViewSet)
+# router.register(r'manuscripts', ManuscriptViewSet.as_view(), name='manuscripts')
+
 
 urlpatterns = [
     path('',include(router.urls)),
@@ -15,6 +17,4 @@ urlpatterns = [
     path('changepassword/', UserChangePasswordView.as_view(), name= 'changepassword'),
     path('uploadimage/', ImageUploadView.as_view(), name='uploadimage'),
     path('wasteitem/predict/<int:image_id>', WasteItemPredictionView.as_view(), name='wasteitempredict'),
-
-
 ]
