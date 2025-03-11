@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   View,
@@ -12,16 +13,15 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
 } from "react-native";
-import AuthService from "../service/AuthService";
+import AuthService from "./authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
 const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
   const handleLogin = async () => {
     console.log("Attempting login with:", { email, password });
     try {
@@ -33,11 +33,13 @@ const LoginScreen = () => {
         console.log("Access Token:", tokens.access);
         console.log("Refresh Token:", tokens.refresh);
         Alert.alert("Success", "Logged in successfully!");
-        // router.push("/screens/HomeScreen");
-      } else {
+
+        router.push("./homescreen");
+        // router.push("./homescreen");
+    } else {
         Alert.alert("Error", "Failed to log in: No token received.");
       }
-    } catch (error: any ) {
+    } catch (error: any) {
       Alert.alert("Error", error.message);
       console.error("Login failed:", error.response?.data || error.message);
     }
@@ -116,3 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 export default LoginScreen;
+

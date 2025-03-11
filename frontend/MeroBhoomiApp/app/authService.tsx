@@ -1,11 +1,13 @@
 import axios from 'axios';
+export const API_BASEURL = 'http://10.0.2.2:8000/api';  // For Android emulator
+// const API_URL = 'http://192.168.10.77:8000/api/user/login/';  // For Android emulator
+// const API_URL = "http://192.168.10.68:8000/api/user/login/"; // Replace with your PC's IP
 
-const API_URL = 'http://10.0.2.2:8000/api/user/login/';  // For Android emulator
 
 const userLogin = async (email: string, password: string) => {
   try {
     console.log('Request Payload:', { email, password });
-    const response = await axios.post(API_URL, { email, password }, {
+    const response = await axios.post(`${API_BASEURL}/user/login/`, { email, password }, {
       headers: { 'Content-Type': 'application/json' }
     });
     console.log('API Response:', response.data);
@@ -25,5 +27,4 @@ const userLogin = async (email: string, password: string) => {
     throw new Error(error.response?.data?.detail || 'Login failed');
   }
 };
-
 export default { userLogin };

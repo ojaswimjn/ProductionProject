@@ -27,13 +27,17 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
+    return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+        {/* <Stack.Screen name="+not-found" /> */}
+        <Stack.Screen name="login" />
+        <Stack.Screen name="homescreen" />
+
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
+  
 }

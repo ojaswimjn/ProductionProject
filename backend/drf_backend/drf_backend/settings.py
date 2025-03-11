@@ -27,8 +27,13 @@ SECRET_KEY = 'django-insecure-uxnsdv6*2(_7f-y*^m7au=3!jcx$b42&($awo!+_=t*_y^1nqn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "10.0.2.2",  # For Android Emulator
+    "192.168.10.68",  # Your local network IP (if testing on a real device)
+    "192.168.10.77",
+]
 
 # Application definition
 
@@ -43,15 +48,16 @@ INSTALLED_APPS = [
     'api',
     'rest_framework_simplejwt',
     "corsheaders",
+    # "MeroBhoomi",
 
 
 
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -156,7 +162,7 @@ REST_FRAMEWORK = {
 
 #jwt 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),    
 
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -181,10 +187,29 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:19006",  # Metro Bundler (React Native)
+    "http://10.0.2.2:8000",    # Android Emulator accessing backend
+    "http://192.168.10.77:8081",  # Your Expo development server
+    # "http://192.168.10.77:8080",  # Your Expo development server
+    # "http://192.168.10.77",  # Your Expo development server
+
+    "http://192.168.10.68:8000",  # Expo on your local machine
+    "http://192.168.10.68:8081",  # Your Expo development server
+        "http://127.0.0.1:8081",
+    "http://localhost:8081",  
+
+
+
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Remove after testing
+CORS_ALLOW_CREDENTIALS = True  # Allow sending credentials (tokens, cookies)
 
 import os
 
