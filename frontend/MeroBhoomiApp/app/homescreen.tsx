@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
-import { getUserProfile } from "../app/services/authDisplayProfile"; // Import the function for fetching user profile
+import React, {useEffect, useState}from 'react';
+import { StyleSheet, Text, View, Alert } from 'react-native';
+import { getUserProfile } from './services/authDisplayProfile';
 
-const HomeScreen = () => {
-  const [userProfile, setUserProfile] = useState<any>(null); // Store the fetched user profile
-  const [loading, setLoading] = useState<boolean>(true); // State to manage loading spinner
+interface UserProfile {
+  email: string;
+  full_name: string;
+  id: string;
+  is_active: boolean;
+  // Add other fields if needed
+}
 
-  // Function to fetch user profile
+const homescreen = () => {
+  const [userProfile, setUserProfile] = useState({});
+  const [loading, setLoading] = useState(true);
+
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
       const data = await getUserProfile(); // Call the API to get user profile data
       setUserProfile(data); // Set the fetched data to state
       setLoading(false);
+      console.log(data);
     } catch (error) {
       setLoading(false);
       Alert.alert("Error", "Failed to fetch user profile.");
@@ -20,45 +28,33 @@ const HomeScreen = () => {
     }
   };
 
-  // Fetch the profile when the component mounts
   useEffect(() => {
     fetchUserProfile();
   }, []);
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#2B4B40" />
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (!userProfile) {
-    return (
-      <View style={styles.container}>
-        <Text>No profile data available.</Text>
-      </View>
-    );
-  }
-
+  
+  
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Your Home Page</Text>
-      <Text style={styles.profileInfo}>Email: {userProfile.email}</Text>
-      <Text style={styles.profileInfo}>Name: {userProfile.name}</Text>
-      {/* Add other user profile details as necessary */}
+      <Text style={styles.title}>Welcome {userProfile.full_name}!</Text>
+      <Text>Email: {userProfile.email}</Text>
+      <Text>Role: {userProfile.user_role}</Text>
+      <Text>Status: {userProfile.is_active ? "Active" : "Inactive"}</Text>
     </View>
+    
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#fff",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 24,
@@ -71,4 +67,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default homescreen;
