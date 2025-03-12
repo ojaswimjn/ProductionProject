@@ -21,12 +21,12 @@ import {
       <TouchableWithoutFeedback onPress={handleNavigate} accessible={false}>
         <View style={styles.container}>
           {/* App Logo <Image source={require("../assets/logo.png")} style={styles.logo} />*/}
-  
+          <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+
           {/* App Name */}
-          <Text style={styles.appName}>Kuraकुरा</Text>
+          <Text style={styles.appName}>MeroBhoomi</Text>
   
-          {/* Slogan */}
-          <Text style={styles.slogan}>Learn, Speak, Belong.</Text>
+          {/* <Text style={styles.slogan}>Learn, Speak, Belong.</Text> */}
         </View>
       </TouchableWithoutFeedback>
     );
@@ -37,22 +37,19 @@ import {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "#D32F2F",
+      backgroundColor: "#07261B",
     },
     logo: {
-      width: 120,
-      height: 120,
+      width: '75%',
+      height: '18%',
       marginBottom: 20,
+      marginTop: -70
     },
     appName: {
       fontSize: 30,
       fontWeight: "bold",
       color: "#FFFFFF",
-    },
-    slogan: {
-      fontSize: 16,
-      color: "#FFFFFF",
-      marginTop: 5,
-    },
+    }
+    
   });
   
