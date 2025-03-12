@@ -35,7 +35,7 @@ const LoginScreen = () => {
         Alert.alert("Success", "Logged in successfully!");
 
         router.push("./homescreen");
-        // router.push("./homescreen");
+        router.push("./(tabs)");
     } else {
         Alert.alert("Error", "Failed to log in: No token received.");
       }
