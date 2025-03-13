@@ -2,15 +2,15 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 // import { NavigationContainer } from "@react-navigation/native";
 
-const profileScreen
+const scannerScreen
  = () => {
   return (
     <View>
-      <Text>Welcome!!!</Text>
+      <Text>Welcome!!! heyy</Text>
     </View>
   );
 };
 
-export default profileScreen;
+export default scannerScreen;
 
 const styles = StyleSheet.create({});

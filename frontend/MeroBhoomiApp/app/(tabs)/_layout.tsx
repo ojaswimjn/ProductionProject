@@ -34,12 +34,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="profileScreen"
         options={{
-          title: 'Home',
+          title: 'profileScreen',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
+      
       />
+
+      <Tabs.Screen
+        name="scannerScreen"
+        options={{
+          title: 'scannerScreen',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      
+      />
+
+      
     </Tabs>
   );
 }
