@@ -1,78 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, Alert } from "react-native";
-import { getUserProfile } from "../services/authDisplayProfile"; // Assuming this is where your getUserProfile function is defined
+import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
 
-// Define the UserProfile interface
-interface UserProfile {
-  full_name: string;
-  email: string;
-  user_role: string;
-  is_active: boolean;
-  // Add other fields if needed
-}
+import GridMenu from "@/components/home/GridMenu";
+import Header from "@/components/home/Header";
+import WelcomeDash from "@/components/home/WelcomeDash";
+
+export const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
 const HomeScreen = () => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null); // State typed as UserProfile or null
-  const [loading, setLoading] = useState(true);  // To handle loading state
-
-  useEffect(() => {
-    // Fetch user profile once the component mounts
-    const fetchUserProfile = async () => {
-      try {
-        const profileData = await getUserProfile();
-        setUserProfile(profileData);  // Save the fetched data in state
-        setLoading(false);  // Turn off loading indicator
-      } catch (error) {
-        setLoading(false);  // Turn off loading if there's an error
-        Alert.alert("Error", "Failed to fetch user profile.");
-      }
-    };
-
-    fetchUserProfile();  // Call the function to fetch the profile
-  }, []);
-
-  if (loading) {
-    // While loading, show a spinner or loading text
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#2B4B40" />
-        <Text>Loading your profile...</Text>
-      </View>
-    );
-  }
-
-  if (!userProfile) {
-    return (
-      <View style={styles.container}>
-        <Text>No profile data found. Please log in again.</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome {userProfile.full_name}!</Text>
-      <Text>Email: {userProfile.email}</Text>
-      <Text>Role: {userProfile.user_role}</Text>
-      <Text>Status: {userProfile.is_active ? "Active" : "Inactive"}</Text>
-      {/* Render other user profile details if needed */}
-    </View>
+    {/* Fixed Header */}
+    <Header />
+
+    {/* Scrollable Content */}
+    <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <WelcomeDash />
+      <GridMenu />
+      <WelcomeDash />
+      <GridMenu />
+      <WelcomeDash />
+
+    </ScrollView>
+  </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
     backgroundColor: "#ffffff",
+    marginTop: 45
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
+  scrollContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    paddingVertical: 20,
+    marginTop: 50, // Adjust this so content does not overlap with the fixed header
   },
-});
+})
+
 
 export default HomeScreen;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, Alert } from "react-native";
-import { getUserProfile } from "./services/authDisplayProfile"; // Assuming this is where your getUserProfile function is defined
-import GridMenu from "../components/home/GridMenu";
+import { View, Text, StyleSheet, ImageBackground,ActivityIndicator, Alert,   Dimensions,
+} from "react-native";
+import { getUserProfile } from "../../app/services/authDisplayProfile" 
 
 // Define the UserProfile interface
 interface UserProfile {
@@ -12,7 +12,9 @@ interface UserProfile {
   // Add other fields if needed
 }
 
-const HomeScreen = () => {
+export const { width, height } = Dimensions.get("window"); // Get the screen dimensions
+
+const WelcomeDash = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null); // State typed as UserProfile or null
   const [loading, setLoading] = useState(true);  // To handle loading state
 
@@ -52,29 +54,53 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome {userProfile.full_name}!</Text>
-      <Text>Email: {userProfile.email}</Text>
-      <Text>Role: {userProfile.user_role}</Text>
-      <Text>Status: {userProfile.is_active ? "Active" : "Inactive"}</Text>
-      {/* Render other user profile details if needed */}
-      <GridMenu/>
+      <ImageBackground source={require("../../assets/images/profile-bg.png")} style={styles.profileBox}>
+        <Text style={styles.title}>Welcome {userProfile.full_name}!</Text>
+        <Text style={styles.profileText}>Email: {userProfile.email}</Text>
+        <Text style={styles.profileText}>Role: {userProfile.user_role}</Text>
+        <Text style={styles.profileText}>Status: {userProfile.is_active ? "Active" : "Inactive"}</Text>
+        </ImageBackground>
     </View>
   );
-}; 
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
+    padding: '2%',
+    marginBottom: -60
+
+    // backgroundColor: "#ffffff",
+  },
+  profileBox: {
+    width: width * 0.9,
+    height: 200,
+    justifyContent: "center",
     padding: 20,
-    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    marginBottom: 20,
+    overflow: "hidden",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
+    color: "#ffffff",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  profileText: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: "#ffffff",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
 });
 
-export default HomeScreen;
+
+export default WelcomeDash;

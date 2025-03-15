@@ -1,7 +1,7 @@
 import axios from 'axios';
-export const API_BASEURL = 'http://10.0.2.2:8000/api';  // For Android emulator
-// const API_URL = 'http://192.168.10.77:8000/api/user/login/';  // For Android emulator
-// const API_URL = "http://192.168.10.68:8000/api/user/login/"; // Replace with your PC's IP
+// export const API_BASEURL = 'http://10.0.2.2:8000/api';  // For Android emulator
+export const API_BASEURL = 'http://192.168.10.68:8000/api';  // For Android emulator
+// const API_BASEURL = "http://172.22.16.40:8000/api"; // Replace with your PC's IP
 
 
 const userLogin = async (email: string, password: string) => {

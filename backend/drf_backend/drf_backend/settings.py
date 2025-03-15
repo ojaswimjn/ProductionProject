@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     "10.0.2.2",  # For Android Emulator
     "192.168.10.68",  # Your local network IP (if testing on a real device)
     "192.168.10.77",
+    "172.22.16.40"
 ]
 
 # Application definition
@@ -202,7 +203,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.10.68:8000",  # Expo on your local machine
     "http://192.168.10.68:8081",  # Your Expo development server
         "http://127.0.0.1:8081",
-    "http://localhost:8081",  
+    "http://localhost:8081", 
+    "http://172.22.17.40:8081" 
 
 
 
