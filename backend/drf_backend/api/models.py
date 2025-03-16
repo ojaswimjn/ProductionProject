@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, tc,full_name, user_role, password=None, password2=None):
+    def create_user(self, email, tc,full_name, user_role="customer", date_of_birth=None, password=None, password2=None ):
         """
         Creates and saves a User with the given email, tc and password.
         """
@@ -18,13 +18,14 @@ class UserManager(BaseUserManager):
             tc= tc,
             full_name=full_name,
             user_role=user_role,
+            date_of_birth = date_of_birth
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, tc, full_name, user_role, password=None):
+    def create_superuser(self, email, tc, full_name, user_role, date_of_birth=None,  password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -34,11 +35,13 @@ class UserManager(BaseUserManager):
             password=password,
             tc=tc,
             full_name=full_name,
+            date_of_birth=date_of_birth,
             user_role=user_role,
             
         )
         user.is_admin = True
         user.save(using=self._db)
+
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -47,20 +50,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=255,
         unique=True,
     )
-    date_of_birth = models.DateField(default=now)
+    date_of_birth = models.DateField(null=True, blank=True)  # Allow user input
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     full_name = models.CharField(max_length=100)
     tc =models.BooleanField()
-    user_role = models.CharField(max_length=40)
-    created_date = models.DateField(default=now)
-    updated_date = models.DateField(default=now)
+    user_role = models.CharField(max_length=40, default="customer")
+    created_date = models.DateTimeField(auto_now_add=True)  # Set on creation
+    updated_date = models.DateTimeField(auto_now=True)  # Set on update
     password =models.CharField(max_length=100)
 
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['tc', 'full_name', 'user_role']
+    REQUIRED_FIELDS = ['tc', 'full_name', 'user_role','date_of_birth']
 
     def __str__(self):
         return self.email
