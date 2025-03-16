@@ -47,9 +47,9 @@ const ProfileScreen = () => {
       }
 
       const requestData = {
-        old_password: currentPassword,
-        new_password: newPassword,
-        new_password2: confirmPassword, // Ensure these match API expectations
+        "old_password": currentPassword,
+        "new_password": newPassword,
+        "new_password2": confirmPassword, // Ensure these match API expectations
       };
   
       console.log("Sending request with data:", requestData); // Debugging
@@ -67,7 +67,7 @@ const ProfileScreen = () => {
   
       console.log("Response:", response.data);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         Alert.alert("Success", "Password changed successfully!");
         setEditingPassword(false);
         setCurrentPassword("");
