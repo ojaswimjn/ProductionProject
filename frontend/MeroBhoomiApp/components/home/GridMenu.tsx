@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
 import  { width, height } from '../../app/(tabs)/index'
 const menuItems = [
-  { title: 'Schedule', icon: 'clock-outline', route: '/app/(tabs)/profileScreen.tsx' },
+  { title: 'Schedule', icon: 'clock-outline', route: '/app/(tabs)/scheduleWaste.tsx' },
   { title: 'Recycle', icon: 'recycle', route: '/app/(tabs)/scannerScreen.tsx' },
   { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
   { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
@@ -38,14 +38,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     // backgroundColor: '#E8F6EF',
-    width: width * 0.91,
+    width: width * 0.93,
     alignSelf: 'center',
     paddingTop: '12%',
    
   },
   button: {
     width: '30%',
-    backgroundColor: '#ffffff',
+    backgroundColor: '##E89',
     paddingVertical: 10,
     marginVertical: 6,
     borderRadius: 15,

@@ -126,7 +126,8 @@ class PickupRequest(models.Model):
     pickup_request_id = models.AutoField(primary_key=True)
     request_date = models.DateField()
     request_status= models.CharField(max_length=50)
-    weight = models.CharField(max_length=20)
+    weight = models.FloatField()
+    weight_metric = models.CharField(max_length=10, default="kg")  # Set a default value
     waste_type = models.CharField(max_length=20)
     latitude= models.FloatField()
     longitude = models.FloatField()

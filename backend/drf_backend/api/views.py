@@ -172,6 +172,7 @@ class WasteItemViewSet(viewsets.ModelViewSet):
 class PickupRequestViewSet(viewsets.ModelViewSet):
     queryset = PickupRequest.objects.all()
     serializer_class = PickUpRequestSerializer
+    permission_classes = [IsAuthenticated]  
 
 # Pickup Order ViewSet
 class PickUpSlotViewSet(viewsets.ModelViewSet):

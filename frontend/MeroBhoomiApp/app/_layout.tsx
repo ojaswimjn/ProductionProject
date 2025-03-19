@@ -34,7 +34,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="homescreen" options={{ headerShown: false }} />
-        {/* <Stack.Screen name="bottomTabs/_layout" options={{ headerShown: false }} /> */}
+        <Stack.Screen name="explore" options={{ headerShown: false }} />
 
 
       </Stack>

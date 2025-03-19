@@ -64,8 +64,10 @@ const LoginScreen = () => {
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.signupTextContainer}>
-        <Text style={styles.signupText}>Don't have an account? Sign up</Text>
+      <Text style={styles.signupText}>Don't have an account?</Text>
+      <TouchableOpacity style={styles.signupTextContainer}
+      onPress={() => router.push("./signup")}>
+        <Text style={styles.signupText}>Sign up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   signupTextContainer: {
-    marginTop: height * 0.02, // 2% of screen height for spacing
+    marginTop: height * 0.01, // 2% of screen height for spacing
   },
   signupText: {
     color: "#007BFF",

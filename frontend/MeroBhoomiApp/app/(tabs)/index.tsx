@@ -4,6 +4,7 @@ import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import GridMenu from "@/components/home/GridMenu";
 import Header from "@/components/home/Header";
 import WelcomeDash from "@/components/home/WelcomeDash";
+import DataDashboard from "@/components/home/DataDashboard";
 
 export const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
@@ -18,7 +19,7 @@ const HomeScreen = () => {
     <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
       <WelcomeDash />
       <GridMenu />
-      <WelcomeDash />
+      <DataDashboard/>
       <GridMenu />
       <WelcomeDash />
 

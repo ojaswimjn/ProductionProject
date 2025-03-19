@@ -1,17 +1,61 @@
-import { StyleSheet, Image, Platform, Text, View } from 'react-native';
+// import {  Image, Platform} from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+// import { Collapsible } from '@/components/Collapsible';
+// import { ExternalLink } from '@/components/ExternalLink';
+// import ParallaxScrollView from '@/components/ParallaxScrollView';
+// import { ThemedText } from '@/components/ThemedText';
+// import { ThemedView } from '@/components/ThemedView';
+// import { IconSymbol } from '@/components/ui/IconSymbol';
 
-export default function TabTwoScreen() {
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+
+export default function Explore() {
+  const router = useRouter();
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('accessToken');
+      Alert.alert("Logged Out", "You have been logged out successfully.");
+      router.push('/login');
+  }catch(error) {
+    Alert.alert("Error","Something  went wrong while logging out.");
+  }
+}
   return (
     <View>
       <Text>namaste</Text>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text onPress={handleLogout}>Logout</Text>
+      </TouchableOpacity>
     </View>
+    );
+  }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex:1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    text: {
+      fontSize:24,
+      marginBottom : 20,
+    },
+    logoutButton: {
+      backgroundColor: "red",
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+    },
+    logoutButtonText: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+  })
+
     // <ParallaxScrollView
     //   headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
     //   headerImage={
@@ -95,8 +139,8 @@ export default function TabTwoScreen() {
     //     })}
     //   </Collapsible>
     // </ParallaxScrollView>
-  );
-}
+//   );
+// }
 
 // const styles = StyleSheet.create({
 //   headerImage: {

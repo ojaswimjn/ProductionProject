@@ -1,11 +1,12 @@
 from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, UserChangePasswordView, ImageUploadView, WasteItemPredictionView
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView
 
 router = routers.DefaultRouter()
 router.register(r'waste-category', WasteCategoryViewSet)
 # router.register(r'manuscripts', ManuscriptViewSet.as_view(), name='manuscripts')
+router.register(r'pickuprequest', PickupRequestViewSet, basename='pickuprequest')
 
 
 urlpatterns = [
