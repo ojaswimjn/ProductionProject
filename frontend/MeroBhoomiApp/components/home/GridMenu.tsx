@@ -3,8 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
 import  { width, height } from '../../app/(tabs)/index'
+
 const menuItems = [
-  { title: 'Schedule', icon: 'clock-outline', route: '/app/(tabs)/scheduleWaste.tsx' },
+  { title: 'Schedule', icon: 'clock-outline', route: '/scheduleWaste' },
   { title: 'Recycle', icon: 'recycle', route: '/app/(tabs)/scannerScreen.tsx' },
   { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
   { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
@@ -44,18 +45,18 @@ const styles = StyleSheet.create({
    
   },
   button: {
-    width: '30%',
-    backgroundColor: '##E89',
-    paddingVertical: 10,
-    marginVertical: 6,
-    borderRadius: 15,
+    width: '28%',
+    backgroundColor: '#ffffff',
+    paddingVertical: 15,
+    marginVertical: 8,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   text: {
     marginTop: 8,
