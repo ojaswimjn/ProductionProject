@@ -2,6 +2,8 @@ from rest_framework import serializers
 from api.models import  Store, PickUpSlot, Reward, Image, WasteItem, WasteCategory, PickupRequest, Reedemption
 from api.models import User
 from django.contrib.auth.hashers import check_password
+from django.db.models import Sum
+from datetime import date
 
 
 
@@ -87,6 +89,7 @@ class WasteItemDetailSerializer(serializers.ModelSerializer):
     waste_category = serializers.CharField(source='WasteCategory.category_name')
     image_file_url = serializers.CharField(source='image_id.image_file_url')
 
+
     class Meta:
         model = WasteItem
         fields = ['waste_item_id','accuracy_score','identified_date','waste_category','image_file_url']
@@ -108,6 +111,29 @@ class PickUpRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = PickupRequest
         fields = '__all__'
+
+        def validate(self,attrs):
+            request_date = attrs.get('request_date')
+            weight= attrs.get('weight')
+
+            #check if the selected date is full by count or weight
+            if self.is_date_fully_booked(request_date, weight):
+                raise serializers.ValidationError("Selected date is fully booked. Please choose another date.")
+
+            return data
+
+
+        # def is_date_fully_booked(self, request_date, new_weight):
+        #     max_pickups_per_day = 10
+        #     max_weight_per_day = 100
+
+        #     pickup_count = PickupRequest.objects.filter(request_date=request_date).count()
+        #     total_weight = PickupRequest.objects.filter(request_date=request_date).aggregate(Sum('weight'))['weight_sum'] or 0
+
+        #     return pickup_count >= max_pickups_per_day or (total_weight + new_weight_)> max_weight_per_day
+
+
+
 
 # Pickup Order Serializer
 class PickUpSlotSerializer(serializers.ModelSerializer):

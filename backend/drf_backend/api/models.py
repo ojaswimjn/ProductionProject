@@ -136,6 +136,15 @@ class PickupRequest(models.Model):
     def __str__(self):
         return f"Pickup Order {self.pickup_request_id}"
 
+    @classmethod
+    def is_date_fully_booked(cls, check_date):
+        # Example logic: check if the date is fully booked
+        booked_requests = cls.objects.filter(request_date=check_date)
+        total_weight = sum(request.weight for request in booked_requests)
+        
+        max_weight = 50  # Example: max capacity for a date
+        return total_weight >= max_weight
+
 #PickUp Collection Slot Model
 class PickUpSlot(models.Model):
     slot_id = models.AutoField(primary_key=True)

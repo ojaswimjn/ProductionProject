@@ -11,6 +11,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser, FormParser
+from datetime import date, timedelta  # Ensure this line is present
+
  
 
 #generate token manually
@@ -173,6 +175,43 @@ class PickupRequestViewSet(viewsets.ModelViewSet):
     queryset = PickupRequest.objects.all()
     serializer_class = PickUpRequestSerializer
     permission_classes = [IsAuthenticated]  
+
+class AvailableDateView(APIView):
+    def is_date_fully_booked(self, pickup_date):
+        """Check if a date is fully booked based on weight or request limit"""
+        max_requests = 10  # Example limit of 10 pickups per day
+        max_weight = 100  # Example total weight limit per day
+
+        pickups = PickupRequest.objects.filter(request_date=pickup_date)
+        total_requests = pickups.count()
+        total_weight = sum(p.weight for p in pickups)
+
+        return total_requests >= max_requests or total_weight >= max_weight
+
+    def get(self, request, *args, **kwargs):
+        try:
+            today = date.today()
+            available_dates = []        
+            allowed_days = [1, 4]  # 🚀 Only allow pickups on Monday (1) and Thursday (4)
+
+
+            for i in range(21):  # Check next 3 weeks
+                check_date = today + timedelta(days=i)
+                if check_date.weekday() in allowed_days:  # ✅ Only include allowed days
+                    if not self.is_date_fully_booked(check_date):  # ✅ Now correctly calling the function
+                        available_dates.append(str(check_date))
+
+                # Log the check date for debugging
+                print(f"Checking availability for date: {check_date}")
+                
+            print(f"Available dates: {available_dates}")  # Log available dates
+
+            return Response({"available_dates": available_dates}, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            # Log the error if any exception occurs
+            print(f"Error in AvailableDateView: {e}")
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Pickup Order ViewSet
 class PickUpSlotViewSet(viewsets.ModelViewSet):

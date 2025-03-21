@@ -90,7 +90,7 @@ const ProfileScreen = () => {
         {/* Profile Information */}
         <Text style={styles.title}>Profile</Text>
         <Text style={styles.label}>Name:</Text>
-        <Text style={styles.value}>{userProfile?.name || "N/A"}</Text>
+        <Text style={styles.value}>{userProfile?.full_name || "N/A"}</Text>
 
         <Text style={styles.label}>Email:</Text>
         <Text style={styles.value}>{userProfile?.email || "N/A"}</Text>
