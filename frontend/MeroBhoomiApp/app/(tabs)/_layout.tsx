@@ -33,11 +33,27 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-      
+      <Tabs.Screen
+        name="scheduleWaste"
+        options={{
+          title: 'Schedule Waste',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="scannerScreen"
         options={{
-          title: 'scannerScreen',
+          title: 'Scanner',
+          tabBarIcon: ({ color }) => (<IconSymbol size={28} name="house.fill" color={color} />
+        ),
+        
+        }}
+      
+      />
+      <Tabs.Screen
+        name="pointsReedemptionScreen"
+        options={{
+          title: 'Points',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       

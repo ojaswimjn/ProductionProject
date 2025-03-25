@@ -15,6 +15,8 @@ const scheduleWaste = () => {
     fetchAvailableDates();
   }, []);
 
+  
+
   const fetchAvailableDates = async () => {
     try {
       const response = await axios.get("http://192.168.10.68:8000/api/availabledates/");

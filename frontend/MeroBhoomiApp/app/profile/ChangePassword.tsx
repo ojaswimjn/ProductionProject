@@ -12,14 +12,18 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASEURL } from "../authDisplayService";
 import { getUserProfile } from "../services/authDisplayProfile";
+import {  useRouter } from "expo-router";
 
-const DisplayProfile = () => {
+
+const ChangePassword = () => {
   const [editingPassword, setEditingPassword] = useState(false);
 
   // Password state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const router = useRouter();
 
   // Change Password Function
   const changePassword = async () => {
@@ -65,6 +69,8 @@ const DisplayProfile = () => {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
+
+        router.push('/profileScreen')
       } else {
         Alert.alert(
           "Error",
@@ -79,7 +85,6 @@ const DisplayProfile = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Change Password</Text>
       <Text style={styles.title}>Change Password</Text>
       <TextInput
         style={styles.input}
@@ -105,20 +110,38 @@ const DisplayProfile = () => {
         onChangeText={setConfirmPassword}
       />
 
-      <Button title="Submit" onPress={changePassword} />
+      <Button title="Submit" onPress={changePassword} color="#2B4B40" />
       <Button
         title="Cancel"
         onPress={() => setEditingPassword(false)}
-        color="red"
+        color="#B22222"
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
-  title: {},
-  input: {},
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 20,
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#2B4B40",
+  },
+  input: {
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    marginBottom: 10,
+  },
 });
 
-export default DisplayProfile;
+export default ChangePassword;
