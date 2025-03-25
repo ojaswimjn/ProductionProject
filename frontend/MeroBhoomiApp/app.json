@@ -32,10 +32,16 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    
+    "expo-location":{
+    "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+    "isAndroidBackgroundLocationEnabled":true
     }
   }
 }

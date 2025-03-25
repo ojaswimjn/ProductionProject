@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ActivityIndicator, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Platform, ActivityIndicator, TouchableOpacity, Alert, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { setUserRegistration } from './services/userRegistrationService';
-import DatePicker from 'react-native-date-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-export default function SignupScreen() {
+
+
+export default function signup() {
     const router = useRouter();
     const [form, setForm] = useState({
         email: "",
@@ -16,7 +19,36 @@ export default function SignupScreen() {
     });
 
     const [loading, setLoading] = useState(false);
-    const [openDatePicker, setOpenDatePicker] = useState(false); // Control DatePicker visibility
+    const [date, setDate] = useState(new Date()); // Control DatePicker visibility
+    const[showPicker, setShowPicker] = useState(false);
+
+    const toogleDatePicker = () => {
+        setShowPicker((prev)=> !prev);
+    }
+
+    // const onChange = ({event: type}, selectDate) =>{
+    //     if (type == "set"){
+    //         const currentDate = selectedDate;
+    //         setDate(currentDate);
+    //     } else {
+    //         toggleDatePicker();
+    //     }
+    // };
+
+    const onChange = (event: any, selectedDate?: Date) => {
+        if (selectedDate) {
+            setDate(selectedDate);
+            setForm({ ...form, date_of_birth: formatDate(selectedDate) });
+
+
+            if(Platform.OS === "android"){
+                toogleDatePicker();
+                // setDate(selectedDate.toDateString());
+            }
+        }
+        setShowPicker(false); // Hide picker after selection
+    };
+    
 
     const handleInputChange = (key: string, value: string) => {
         setForm({ ...form, [key]: value });
@@ -74,30 +106,33 @@ export default function SignupScreen() {
                 onChangeText={(text) => handleInputChange('email', text)}
                 keyboardType="email-address"
             />
+            
+            <View>
+                <Text style={styles.label}>Date of Birth</Text>
 
-            <TouchableOpacity
-                style={styles.input}
-                onPress={() => setOpenDatePicker(true)} // Open date picker modal
-            >
-                <Text style={styles.dateText}>
-                    {form.date_of_birth || "Select Date of Birth"}
-                </Text>
-            </TouchableOpacity>
+                {showPicker && (
+                    <DateTimePicker
+                    mode = "date"
+                    display="spinner"
+                    value={date}
+                    onChange={onChange}
+                    />
+                )}
 
-            {/* Date Picker Modal */}
-            <DatePicker
-                modal
-                open={openDatePicker}
-                date={form.date_of_birth ? new Date(form.date_of_birth) : new Date()} // Default to current date if not set
-                mode="date"
-                onConfirm={(date) => {
-                    setOpenDatePicker(false); // Close the modal
-                    setForm({ ...form, date_of_birth: formatDate(date) }); // Update form state with selected date
-                }}
-                onCancel={() => {
-                    setOpenDatePicker(false); // Close the modal without changing the date
-                }}
-            />
+                {!showPicker && (
+                    <Pressable
+                    onPress={toogleDatePicker}
+                    >
+                        <TextInput
+                        style={styles.input}
+                        placeholder='YYYY-MM-DD'
+                        value={form.date_of_birth}
+                        editable={false}
+                        />
+                    </Pressable>
+                )}
+            </View>
+            
 
             <TextInput
                 style={styles.input}
@@ -161,6 +196,9 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         paddingLeft: 10,
         backgroundColor: "#fff",
+    },
+    label:{
+
     },
     dateText: {
         fontSize: 16,

@@ -14,8 +14,10 @@ import {
 } from "react-native";
 import authDisplayService from "./authDisplayService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useRouter } from "expo-router";
+import {  useRouter } from "expo-router";
 const { width, height } = Dimensions.get("window"); // Get the screen dimensions
+
+const router = useRouter();
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -43,6 +45,7 @@ const LoginScreen = () => {
     }
   };
   return (
+    
     <View style={styles.loginContainer}>
       <Text style={styles.title}>Welcome Back!</Text>
       <TextInput
@@ -66,7 +69,7 @@ const LoginScreen = () => {
       </TouchableOpacity>
       <Text style={styles.signupText}>Don't have an account?</Text>
       <TouchableOpacity style={styles.signupTextContainer}
-      onPress={() => router.push("./signup")}>
+      onPress={() => router.push('./signup')}>
         <Text style={styles.signupText}>Sign up</Text>
       </TouchableOpacity>
     </View>
