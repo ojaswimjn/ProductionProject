@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator  } from "react-native";
+import { StyleSheet, Text, View, TextInput, Button, Alert,ScrollView, ActivityIndicator, Image , TouchableOpacity } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASEURL } from "../authDisplayService";
 import { getUserProfile } from "../services/authDisplayProfile"
+import ChangePassword from "../profile/ChangePassword"
+import SavedAddress from "../profile/SavedAddress"
+import PointsAndReedemption from "../profile/PointsAndReedemption"
+import Logout from "../profile/Logout"
+// import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
+
+import {  useRouter } from "expo-router";
+
 
 
 const ProfileScreen = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [editingPassword, setEditingPassword] = useState(false);
+  const router = useRouter();
 
-  // Password state
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     loadUserProfile();
@@ -24,6 +28,7 @@ const ProfileScreen = () => {
   const loadUserProfile = async () => {
     try {
       const profileData = await getUserProfile();
+      console.log(profileData);
       setUserProfile(profileData);
     } catch (error) {
       Alert.alert("Error", "Could not load profile.");
@@ -32,140 +37,143 @@ const ProfileScreen = () => {
     }
   };
 
- // Change Password Function
-  const changePassword = async () => {
-    if (newPassword !== confirmPassword) {
-      Alert.alert("Error", "New password and confirmation do not match!");
-      return;
-    }
 
-    try {
-      const accessToken = await AsyncStorage.getItem("accessToken");
-      if (!accessToken) {
-        Alert.alert("Error", "No authentication token found. Please log in again.");
-        return;
-      }
-
-      const requestData = {
-        "old_password": currentPassword,
-        "new_password": newPassword,
-        "new_password2": confirmPassword, // Ensure these match API expectations
-      };
-  
-      console.log("Sending request with data:", requestData); // Debugging
-  
-      const response = await axios.post(
-        `${API_BASEURL}/user/changepassword/`,
-        requestData,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-  
-      console.log("Response:", response.data);
-
-      if (response.status === 201) {
-        Alert.alert("Success", "Password changed successfully!");
-        setEditingPassword(false);
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        Alert.alert("Error", response.data?.message || "Failed to change password");
-      }
-    } catch (error) {
-      console.error("Error changing password:", error);
-      Alert.alert("Error", "Something went wrong. Please try again.");
-    }
-  };
   return (
     <View style={styles.container}>
-    {loading ? (
-      <ActivityIndicator size="large" color="#2B4B40" />
-    ) : (
-      <>
-        {/* Profile Information */}
-        <Text style={styles.title}>Profile</Text>
-        <Text style={styles.label}>Name:</Text>
-        <Text style={styles.value}>{userProfile?.full_name || "N/A"}</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#2B4B40" />
+      ) : (
+        <>
 
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{userProfile?.email || "N/A"}</Text>
+          <View style={styles.banner}>
+            <Image source={require("../../assets/images/profileBanner.png")} style={styles.bannerImage} />
+          </View>
 
-        {!editingPassword ? (
-          <Button title="Change Password" onPress={() => setEditingPassword(true)} />
-        ) : (
-          <>
-            {/* Password Change Form */}
-            <Text style={styles.title}>Change Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Current Password"
-              secureTextEntry
-              value={currentPassword}
-              onChangeText={setCurrentPassword}
-            />
+          <View style={styles.profileContainer}>
+            <Image source={require("../")} style={styles.profileImage} />
+            <Text style={styles.title}>Profile</Text>
+            <Text style={styles.label}>Name:</Text>
+            <Text style={styles.value}>{userProfile?.full_name || "N/A"}</Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="New Password"
-              secureTextEntry
-              value={newPassword}
-              onChangeText={setNewPassword}
-            />
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.value}>{userProfile?.email || "N/A"}</Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm New Password"
-              secureTextEntry
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
+            <Text style={styles.label}>Date Of Birth:</Text>
+            <Text style={styles.value}>{userProfile?.date_of_birth || "N/A"}</Text>
 
-            <Button title="Submit" onPress={changePassword} />
-            <Button title="Cancel" onPress={() => setEditingPassword(false)} color="red" />
-          </>
-        )}
-      </>
-    )}
-  </View>
-);
+          </View>
+          {/* Navigation Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => router.push('/profile/ChangePassword')
+            }
+            >
+              <Text style={styles.buttonText}>Change Password</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => router.push('/profile/SavedAddress')}
+            >
+              <Text style={styles.buttonText}>Saved Addresses</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => router.push('/profile/PointsAndReedemption')}
+            >
+              <Text style={styles.buttonText}>Points & Redemption</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.button, styles.button]} 
+              onPress={() => router.push('/profile/Logout')}
+            >
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>     
+        </>
+      )}
+    </View>
+  );
 };
 
 // Styles
 const styles = StyleSheet.create({
-container: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  padding: 20,
-  backgroundColor: "#ffffff",
-},
-title: {
-  fontSize: 24,
-  fontWeight: "bold",
-  marginBottom: 20,
-},
-label: {
-  fontSize: 18,
-  fontWeight: "600",
-  marginTop: 10,
-},
-value: {
-  fontSize: 16,
-  marginBottom: 10,
-},
-input: {
-  width: "100%",
-  padding: 10,
-  marginBottom: 15,
-  borderWidth: 1,
-  borderColor: "#ccc",
-  borderRadius: 5,
-},
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: "#F4F4F4",
+    alignItems: "center",
+  },
+  banner: {
+    width: "100%",
+    height: 150,
+    marginBottom: 20,
+  },
+  bannerImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    borderRadius: 10,
+  },
+  profileContainer: {
+    backgroundColor: "#ffffff",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    width: "100%",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#2B4B40",
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#555",
+    marginTop: 10,
+  },
+  value: {
+    fontSize: 16,
+    color: "#333",
+  },
+  buttonContainer: {
+    marginTop: 20,
+    width: "100%",
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "#2B4B40",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginVertical: 5,
+    width: "90%",
+    alignItems: "center",
+  },
+  logoutButton: {
+    backgroundColor: "#B22222",
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
 
 export default ProfileScreen;
