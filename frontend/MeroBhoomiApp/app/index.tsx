@@ -37,7 +37,7 @@ import {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "#07261B",
+      backgroundColor: "#051C14",
     },
     logo: {
       width: '75%',

@@ -10,18 +10,21 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Dimensions,
+  Image,
   TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
 import authDisplayService from "./authDisplayService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {  useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { Icon } from "react-native-paper";
 const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
-const router = useRouter();
-
 const LoginScreen = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
   const handleLogin = async () => {
     console.log("Attempting login with:", { email, password });
     try {
@@ -34,90 +37,147 @@ const LoginScreen = () => {
         console.log("Refresh Token:", tokens.refresh);
         Alert.alert("Success", "Logged in successfully!");
 
-        // router.push("./homescreen");
         router.push("./(tabs)");
       } else {
         Alert.alert("Error", "Failed to log in: No token received.");
       }
     } catch (error: any) {
-      Alert.alert("Error", error.message);
-      console.error("Login failed:", error.response?.data || error.message);
+      
+      Alert.alert("Error", error?.response?.data?.errors?.non_field_errors?.[0] || error?.message);
+      console.log("Login failed:", error.response?.data || error.message);
     }
   };
+
   return (
-    
-    <View style={styles.loginContainer}>
-      <Text style={styles.title}>Welcome Back!</Text>
-      <TextInput
-        style={styles.TextInput}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoFocus={true} // Ensure it focuses and shows keyboard on email input
-      />
-      <TextInput
-        style={styles.TextInput}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Login</Text>
-      </TouchableOpacity>
-      <Text style={styles.signupText}>Don't have an account?</Text>
-      <TouchableOpacity style={styles.signupTextContainer}
-      onPress={() => router.push('./signup')}>
-        <Text style={styles.signupText}>Sign up</Text>
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <ScrollView contentContainerStyle={styles.loginContainer}>
+        <Image source={require("../assets/images/login.png")} style={styles.imageContainer} />
+        
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Welcome Back!</Text>
+          <Text style={styles.motto}>Login to your account</Text>
+        </View>
+
+        <View style={styles.inputContainer}>
+          {/* <Icon name="email" size={24} color="#333" style={styles.icon} /> */}
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+
+          
+          <TouchableOpacity style={styles.forgotPasswordContainer}>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Login</Text>
+        </TouchableOpacity>
+
+        <View style={styles.signupContainer}>
+          <Text style={styles.signupText}>Don't have an account?</Text>
+          <TouchableOpacity onPress={() => router.push("./signup")}>
+            <Text style={styles.signupLink}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
+
 const styles = StyleSheet.create({
   loginContainer: {
-    flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
-    // padding: 20,
     backgroundColor: "#ffffff",
+    paddingBottom: height * 0.04, // Adding space at the bottom for comfortable form submission
+  },
+  imageContainer: {
+    width: "100%",
+    height: height * 0.4, // Covers top 40% of the screen
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  titleContainer: {
+    alignItems: "center",
+    marginTop: height * 0.45, // Adjust based on image height
   },
   title: {
     fontSize: width * 0.08, // 8% of screen width for title size
     fontWeight: "bold",
-    paddingBottom: height * 0.05, // 5% of the height fo spacing
-    color: "#333",
+    color: "#2B4B40",
+  },
+  motto: {
+    fontSize: width * 0.028, // Slightly smaller than title
+    color: "#2B4B40",
+    fontWeight: "300",
+    marginBottom: height * 0.03,
+  },
+  inputContainer: {
+    width: "80%",
   },
   TextInput: {
-    width: "80%",
+    width: "100%",
     padding: width * 0.04,
-    borderRadius: 8,
+    borderRadius: 16,
     marginVertical: height * 0.01,
     borderWidth: 1,
     borderColor: "#ddd",
     backgroundColor: "#fff",
-    fontSize: width * 0.04, // Responsive font size based on screen width
+    fontSize: width * 0.04,
+  },
+  forgotPasswordContainer: {
+    width: "100%",
+    alignItems: "flex-end",
+    marginTop: height * 0.005,
+  },
+  forgotPasswordText: {
+    color: "#2B4B40",
+    fontSize: width * 0.035,
+    fontWeight: "500",
+    marginBottom: height * 0.13,
   },
   loginButton: {
     width: "80%",
-    backgroundColor: "#2B4B40", // Green
-    padding: height * 0.02, // 2% of screen height for padding
-    borderRadius: 8,
+    backgroundColor: "#2B4B40",
+    padding: height * 0.016,
+    borderRadius: 50,
     alignItems: "center",
-    marginVertical: height * 0.03, // 3% of screen height for spacing
   },
   loginButtonText: {
     color: "#fff",
-    fontSize: width * 0.05, // 5% of screen width for font size
+    fontSize: width * 0.05,
     fontWeight: "600",
   },
-  signupTextContainer: {
-    marginTop: height * 0.01, // 2% of screen height for spacing
+  signupContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: height * 0.04, // Keep at bottom
   },
   signupText: {
-    color: "#007BFF",
-    fontSize: width * 0.04, // Responsive font size based on screen width
+    fontSize: width * 0.04,
+    color: "#9D9D9D",
+  },
+  signupLink: {
+    color: "#2B4B40",
+    fontWeight: "600",
+    marginLeft: 5,
+    marginTop: 2,
   },
 });
+
 export default LoginScreen;

@@ -46,11 +46,11 @@ const ProfileScreen = () => {
         <>
 
           <View style={styles.banner}>
-            <Image source={require("../../assets/images/profileBanner.png")} style={styles.bannerImage} />
+            <Image source={require("../../assets/images/block.jpg")} style={styles.bannerImage} />
           </View>
 
           <View style={styles.profileContainer}>
-            <Image source={require("../../assets/images/logo.png")} style={styles.profileImage} />
+            <Image source={require("../../assets/images/user.png")} style={styles.profileImage} />
             <Text style={styles.name}>{userProfile?.full_name || "Name: Loading..."}</Text>
 
             <Text style={styles.email}>{userProfile?.email || "Email: Loading..."}</Text>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width:'100%',
-    height: 180,
+    height: 220,
     backgroundColor: "#2B4B40",
     justifyContent: "center",
     alignItems: "center",
@@ -129,9 +129,9 @@ const styles = StyleSheet.create({
     marginTop: -50,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 150,
+    height: 150,
+    borderRadius: 100,
     borderWidth: 3,
     borderColor: "#fff",
   },

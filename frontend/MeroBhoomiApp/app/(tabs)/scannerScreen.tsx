@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { Button, Image, View, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 export default function ImagePickerExample() {
   const [image, setImage] = useState<string | null>(null);
+  
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images', 'videos'],
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [6, 4],
       quality: 1,
     });
 
