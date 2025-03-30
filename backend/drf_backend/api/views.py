@@ -12,6 +12,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from datetime import date, timedelta  # Ensure this line is present
+from django.core.mail import send_mail
+from django.contrib.auth.tokens import default_token_generator
+
 
  
 
@@ -67,6 +70,63 @@ class UserChangePasswordView(APIView):
             return Response({'success': 'Password changed successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
+
+#send reset password mail
+class SendOTPView(APIView):
+    def post(self,request):
+        email = request.get.data('email')
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+        otp = random.randint(100000, 999999)  # Generate a 6-digit OTP
+        user.profile.otp = otp  # Save OTP in user profile (assumes a `profile` model exists)
+        user.profile.save() 
+
+        send_mail(
+            'Password Reset Request ',
+            f'Your OTP for password reset is {otp}.',
+            'noreply@merobhoomi.com',
+            [user.email],
+            fail_silently=False,
+        )
+
+        return Response({'sucess','Password reset link sent '}, status=status.HTTP_200_OK)
+
+#reset password view
+class VerifyOTPAndResetPasswordView(APIView):
+    def post (self, request):
+        email = request.data.get('email')
+        otp = request.data.get('otp')
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        if not email or not otp or not new_password or not confirm_password:
+            return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != confirm_password:
+            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check OTP
+        if str(user.profile.otp) != str(otp):  
+            return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Reset password
+        user.set_password(new_password)
+        user.save()
+        user.profile.otp = None  # Clear OTP after successful reset
+        user.profile.save()
+
+        return Response({'success': 'Password has been reset successfully'}, status=status.HTTP_200_OK)
 
 #Image
 class ImageUploadView(APIView):

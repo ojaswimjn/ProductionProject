@@ -17,13 +17,18 @@ import {
 import authDisplayService from "./authDisplayService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { Icon } from "react-native-paper";
+// import { Icon } from "react-native-vector-icons";
+// import {eyeOff} from 'react-native-vector-icons';
+// import {eye} from 'react-icons-kit/feather/eye'
+
 const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
 const LoginScreen = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [type, setType] = useState('password');
+  // const [ icon, setIcon] = useState(eyeOff);
   
   const handleLogin = async () => {
     console.log("Attempting login with:", { email, password });
@@ -43,11 +48,22 @@ const LoginScreen = () => {
       }
     } catch (error: any) {
       
-      Alert.alert("Error", error?.response?.data?.errors?.non_field_errors?.[0] || error?.message);
+      // Alert.alert("Error", error?.response?.data?.errors?.non_field_errors?.[0] || error?.message);
+      Alert.alert("Error", "The email or password you have entered is incorrect. Please try again.");
       console.log("Login failed:", error.response?.data || error.message);
     }
   };
 
+  // const handleToggle=() =>{
+  //   if(type === 'password'){
+  //     setIcon(eye);
+  //     setType('text');
+  //   }
+  //   else{
+  //     setIcon(eyeOff);
+  //     setType('password');
+  //   }
+  // }
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={styles.loginContainer}>
@@ -75,9 +91,12 @@ const LoginScreen = () => {
             onChangeText={setPassword}
             secureTextEntry
           />
+          {/* <TouchableOpacity onPress={handleToggle}>
+            <Icon icon={icon}>hi</Icon>
+          </TouchableOpacity> */}
 
           
-          <TouchableOpacity style={styles.forgotPasswordContainer}>
+          <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => {router.push("./forgetpassword")}}>
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
@@ -166,7 +185,7 @@ const styles = StyleSheet.create({
   signupContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: height * 0.04, // Keep at bottom
+    marginBottom: height * 0.045, // Keep at bottom
   },
   signupText: {
     fontSize: width * 0.04,

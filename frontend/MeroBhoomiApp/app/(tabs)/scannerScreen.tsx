@@ -61,13 +61,13 @@ export default function ImagePickerExample() {
       <Button title="Pick an image from camera roll" onPress={pickImage} />
       <Button title="Open camera" onPress={openCamera} />
       {image && <Image source={{ uri: image }} style={styles.image} />}
-      <CameraView style={styles.camera} facing={facing}>
+      {/* <CameraView style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
         </View>
-      </CameraView>
+      </CameraView> */}
     </View>
   );
 }
