@@ -14,6 +14,11 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from datetime import date, timedelta  # Ensure this line is present
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import get_user_model
+import random
+from django.core.cache import cache  # ✅ Import cache to store OTP
+
+
 
 
  
@@ -70,11 +75,11 @@ class UserChangePasswordView(APIView):
             return Response({'success': 'Password changed successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
-
+User = get_user_model()  # ✅ Define User model
 #send reset password mail
 class SendOTPView(APIView):
     def post(self,request):
-        email = request.get.data('email')
+        email = request.data.get('email') 
         if not email:
             return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -84,23 +89,37 @@ class SendOTPView(APIView):
             return Response({'error': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
         otp = random.randint(100000, 999999)  # Generate a 6-digit OTP
-        user.profile.otp = otp  # Save OTP in user profile (assumes a `profile` model exists)
-        user.profile.save() 
+        cache.set(f'otp_{email}', otp, timeout=300)  # ✅ Store OTP in cache (valid for 5 minutes)
+        cached_otp = cache.get(f'otp_{email}')  # Retrieve OTP from cache
+        print(f'Stored OTP: {cached_otp}')  # This should print the correct OTP
+        message = f"""
+    Dear {user.full_name.split(" ")[0]},
+    We received a request to reset the password for your account associated with this email. 
+    To proceed with resetting your password, please use the following One-Time Password (OTP):
+        
+    **Your OTP:** {otp}
+
+    This OTP is valid for the next 5 minutes. If you did not request this change, please ignore this email. 
+    Your account security is important to us, and no changes will be made without entering this OTP.
+
+    Best regards,  
+    Mero Bhoomi Support Team  
+    """
 
         send_mail(
             'Password Reset Request ',
-            f'Your OTP for password reset is {otp}.',
-            'noreply@merobhoomi.com',
+            message,
+            'merobhoomi@gmail.com',
             [user.email],
             fail_silently=False,
         )
 
-        return Response({'sucess','Password reset link sent '}, status=status.HTTP_200_OK)
+        return Response({'success': 'OTP sent to email'}, status=status.HTTP_200_OK)
 
 #reset password view
 class VerifyOTPAndResetPasswordView(APIView):
     def post (self, request):
-        email = request.data.get('email')
+        email = request.data.get('email')  # ✅ Correct
         otp = request.data.get('otp')
         new_password = request.data.get('new_password')
         confirm_password = request.data.get('confirm_password')
@@ -117,14 +136,13 @@ class VerifyOTPAndResetPasswordView(APIView):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Check OTP
-        if str(user.profile.otp) != str(otp):  
-            return Response({'error': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+        cached_otp = cache.get(f'otp_{email}')  # Retrieve OTP from cache
+        if not cached_otp or str(cached_otp) != str(otp):
+            return Response({'error': 'Invalid or expired OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Reset password
         user.set_password(new_password)
         user.save()
-        user.profile.otp = None  # Clear OTP after successful reset
-        user.profile.save()
 
         return Response({'success': 'Password has been reset successfully'}, status=status.HTTP_200_OK)
 

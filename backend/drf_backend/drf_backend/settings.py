@@ -222,4 +222,14 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'mediafiles')
 # URL used to access the media
 MEDIA_URL = '/media/'
 
-FRONTEND_BASE_URL = os.environ.get('FRONTEND_BASE_URL', 'http://192.168.10.68:8000/api')
+#email sending 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Use SMTP backend
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'merobhoomi@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'sxqp ztpn sbhw xuke'
+DEFAULT_FROM_EMAIL = 'merobhoomi@gmail.com'
+
+
+

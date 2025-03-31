@@ -21,7 +21,7 @@ urlpatterns = [
 
     path('availabledates/', AvailableDateView.as_view(), name='availabledates'),
 
-    path('forgotpassword/', SendOTPView.as_view(), name='forgotpassword'),
-    path('resetpassword/<uidb64>/<token>',VerifyOTPAndResetPasswordView.as_view(), name = 'resetpassword')
+    path('sendotp/', SendOTPView.as_view(), name='sendotp'),
+    path('resetpassword/',VerifyOTPAndResetPasswordView.as_view(), name = 'resetpassword')
 
 ]

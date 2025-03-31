@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   motto: {
     fontSize: width * 0.028, // Slightly smaller than title
     color: "#2B4B40",
-    fontWeight: "300",
+    fontWeight: "400",
     marginBottom: height * 0.03,
   },
   inputContainer: {
