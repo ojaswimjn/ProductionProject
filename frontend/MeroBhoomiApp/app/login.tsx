@@ -96,7 +96,7 @@ const LoginScreen = () => {
           </TouchableOpacity> */}
 
           
-          <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => {router.push("./forgetpassword")}}>
+          <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => {router.push("./forgetPassword")}}>
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "80%",
+    
   },
   TextInput: {
     width: "100%",
@@ -155,8 +156,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginVertical: height * 0.01,
     borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
+    borderColor: "#E8F1EE",
+    backgroundColor: "#E8F1EE",
     fontSize: width * 0.04,
   },
   forgotPasswordContainer: {
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     width: "80%",
     backgroundColor: "#2B4B40",
     padding: height * 0.016,
-    borderRadius: 50,
+    borderRadius: 30,
     alignItems: "center",
   },
   loginButtonText: {

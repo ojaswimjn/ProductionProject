@@ -1,7 +1,7 @@
 from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView
 
 router = routers.DefaultRouter()
 router.register(r'waste-category', WasteCategoryViewSet)
@@ -22,6 +22,7 @@ urlpatterns = [
     path('availabledates/', AvailableDateView.as_view(), name='availabledates'),
 
     path('sendotp/', SendOTPView.as_view(), name='sendotp'),
-    path('resetpassword/',VerifyOTPAndResetPasswordView.as_view(), name = 'resetpassword')
+    path('resetpassword/',VerifyOTPAndResetPasswordView.as_view(), name = 'resetpassword'),
+    path('otpverify/',VerifyOTPView.as_view(), name = 'otpverify'),
 
 ]

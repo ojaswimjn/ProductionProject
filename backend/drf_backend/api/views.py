@@ -146,6 +146,28 @@ class VerifyOTPAndResetPasswordView(APIView):
 
         return Response({'success': 'Password has been reset successfully'}, status=status.HTTP_200_OK)
 
+
+#reset password view
+class VerifyOTPView(APIView):
+    def post (self, request):
+        email = request.data.get('email')  # ✅ Correct
+        otp = request.data.get('otp')
+
+        if not email or not otp :
+            return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check OTP
+        cached_otp = cache.get(f'otp_{email}')  # Retrieve OTP from cache
+        if not cached_otp or str(cached_otp) != str(otp):
+            return Response({'error': 'Invalid or expired OTP'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'success': 'OTP has been verified successfully'}, status=status.HTTP_200_OK)
+
 #Image
 class ImageUploadView(APIView):
     permission_classes = [IsAuthenticated]
