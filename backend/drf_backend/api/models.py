@@ -95,7 +95,7 @@ class Image(models.Model):
     image_id = models.AutoField(primary_key=True)
     created_date = models.DateField(auto_now_add=True)
     # image_type = models.CharField(max_length=50)
-    image_file_url = models.ImageField(upload_to=upload_to, blank=True, null=True)
+    image_file= models.ImageField(upload_to=upload_to, blank=True, null=True)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     def __str__(self):
         return f"Image {self.image_id}"

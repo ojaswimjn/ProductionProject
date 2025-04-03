@@ -17,6 +17,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
 import random
 from django.core.cache import cache  # ✅ Import cache to store OTP
+from django.http import QueryDict
 
 
 
@@ -171,29 +172,62 @@ class VerifyOTPView(APIView):
 #Image
 class ImageUploadView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser)  # Ensure MultiPartParser is included
 
-    def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
-
-    #post
     def post(self, request, format=None):
-        data = request.data.copy()  # Create a mutable copy of request data
-        data['user_id'] = request.user.id  # Set user ID from token
+        # data = request.data.copy()
+        data = request.data.dict() if isinstance(request.data, QueryDict) else request.data.copy()
 
-        serializer = ImageSerializer(data= data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response({'sucess': 'Image uploaded successfully', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        data['user_id'] = request.user.id  # Ensure user ID is included
+        
+        serializer = ImageSerializer(data=data)
+
+        if serializer.is_valid():
+            image= serializer.save()
+
+            predicted_category_id,accuracy_score = predict_image(image.image_file.path)
+
+            
+            print(f"Predicted category ID: {predicted_category_id}")
+
+
+            try:
+                waste_category = WasteCategory.objects.get(category_id= predicted_category_id)
+            except WasteCategory.DoesNotExist:
+                return Response(
+                    {'error': f'WasteCategory with ID {predicted_category_id} does not exist'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+             # Get or create the corresponding WasteItem
+            waste_item, created = WasteItem.objects.get_or_create(
+                image_id=image,
+                defaults={
+                    'accuracy_score': accuracy_score,
+                    'category_id': waste_category
+                }
+            )
+
+            # If the WasteItem already exists, update its fields
+            if not created:
+                waste_item.accuracy_score = accuracy_score
+                waste_item.category_id = waste_category
+                waste_item.save()
+
+            response_data = {
+                'image_id': image.image_id,
+                'image_url': image.image_file.url,
+                'category_name': waste_category.category_name,
+                'predicted_class_index': waste_category.category_id,
+                'accuracy_score': waste_item.accuracy_score
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+            return Response(
+                {'success': 'Image uploaded successfully', 'data': serializer.data}, 
+                status=status.HTTP_201_CREATED
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    #get
-    def get(self, request, format=None):
-        images = Image.objects.filter(user_id=request.user)
-        serializer = ImageSerializer(images, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-
 
     # def post(self, request, format=None):
 

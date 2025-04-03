@@ -81,7 +81,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ['image_id','created_date','image_file_url','user_id']
+        fields = ['image_id','created_date','image_file','user_id']
         read_only_fields = ['image_id','created_date']
 
 #WasteItemDetailSerializer

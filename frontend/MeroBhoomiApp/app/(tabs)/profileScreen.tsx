@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2B4B40",
     justifyContent: "center",
     alignItems: "center",
-    borderBottomLeftRadius: '5%',
+    borderBottomLeftRadius: 90,
     borderBottomRightRadius: '5%',
   },
   bannerImage: {

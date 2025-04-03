@@ -2,6 +2,8 @@ from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
 from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView
+from django.conf import settings
+from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
 router.register(r'waste-category', WasteCategoryViewSet)
@@ -26,3 +28,6 @@ urlpatterns = [
     path('otpverify/',VerifyOTPView.as_view(), name = 'otpverify'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
