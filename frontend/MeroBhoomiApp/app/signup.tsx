@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Platform, ActivityIndicator, TouchableOpacity, Alert, StyleSheet, Pressable } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    Platform,
+    ActivityIndicator,
+    TouchableOpacity,
+    Alert,
+    StyleSheet,
+    Pressable,
+    Dimensions,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { setUserRegistration } from './services/userRegistrationService';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
+const { width, height } = Dimensions.get("window");
 
-
-export default function signup() {
+export default function Signup() {
     const router = useRouter();
     const [form, setForm] = useState({
         email: "",
@@ -19,36 +29,21 @@ export default function signup() {
     });
 
     const [loading, setLoading] = useState(false);
-    const [date, setDate] = useState(new Date()); // Control DatePicker visibility
-    const[showPicker, setShowPicker] = useState(false);
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
 
-    const toogleDatePicker = () => {
-        setShowPicker((prev)=> !prev);
-    }
-
-    // const onChange = ({event: type}, selectDate) =>{
-    //     if (type == "set"){
-    //         const currentDate = selectedDate;
-    //         setDate(currentDate);
-    //     } else {
-    //         toggleDatePicker();
-    //     }
-    // };
+    const toggleDatePicker = () => {
+        setShowPicker((prev) => !prev);
+    };
 
     const onChange = (event: any, selectedDate?: Date) => {
         if (selectedDate) {
             setDate(selectedDate);
             setForm({ ...form, date_of_birth: formatDate(selectedDate) });
-
-
-            if(Platform.OS === "android"){
-                toogleDatePicker();
-                // setDate(selectedDate.toDateString());
-            }
+            if (Platform.OS === "android") toggleDatePicker();
         }
-        setShowPicker(false); // Hide picker after selection
+        setShowPicker(false);
     };
-    
 
     const handleInputChange = (key: string, value: string) => {
         setForm({ ...form, [key]: value });
@@ -73,24 +68,22 @@ export default function signup() {
         }
 
         setLoading(true);
-
         try {
             const data = await setUserRegistration({
                 ...form,
-                date_of_birth: formatDate(new Date(form.date_of_birth)), // Ensure correct date format
+                date_of_birth: formatDate(new Date(form.date_of_birth)),
             });
             Alert.alert("Success", "Account created successfully!");
             router.push("/login");
         } catch (error: any) {
             Alert.alert("Signup Failed", error.password?.[0] || error.email?.[0] || "Something went wrong");
         }
-
         setLoading(false);
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Create an account</Text>
+            <Text style={styles.header}>Create an account</Text>
 
             <TextInput
                 style={styles.input}
@@ -105,34 +98,28 @@ export default function signup() {
                 value={form.email}
                 onChangeText={(text) => handleInputChange('email', text)}
                 keyboardType="email-address"
+                autoCapitalize="none"
             />
-            
-            <View>
-                <Text style={styles.label}>Date of Birth</Text>
 
-                {showPicker && (
-                    <DateTimePicker
-                    mode = "date"
+            <Text style={styles.label}>Date of Birth</Text>
+            {showPicker && (
+                <DateTimePicker
+                    mode="date"
                     display="spinner"
                     value={date}
                     onChange={onChange}
-                    />
-                )}
-
-                {!showPicker && (
-                    <Pressable
-                    onPress={toogleDatePicker}
-                    >
-                        <TextInput
+                />
+            )}
+            {!showPicker && (
+                <Pressable onPress={toggleDatePicker}>
+                    <TextInput
                         style={styles.input}
-                        placeholder='YYYY-MM-DD'
+                        placeholder="YYYY-MM-DD"
                         value={form.date_of_birth}
                         editable={false}
-                        />
-                    </Pressable>
-                )}
-            </View>
-            
+                    />
+                </Pressable>
+            )}
 
             <TextInput
                 style={styles.input}
@@ -151,13 +138,13 @@ export default function signup() {
             />
 
             <View style={styles.tcContainer}>
-                <Text style={styles.tcText}>I agree to the Terms and Conditions</Text>
                 <TouchableOpacity
                     onPress={() => setForm({ ...form, tc: !form.tc })}
-                    style={styles.tcCheckbox}
+                    style={styles.checkbox}
                 >
-                    {form.tc && <Text style={styles.tcChecked}>✔</Text>}
+                    {form.tc && <Text style={styles.checkboxTick}>✔</Text>}
                 </TouchableOpacity>
+                <Text style={styles.tcText}>I agree to the Terms and Conditions</Text>
             </View>
 
             <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
@@ -168,8 +155,8 @@ export default function signup() {
                 )}
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.signupTextContainer} onPress={() => router.push("/login")}>
-                <Text style={styles.signupText}>Already have an account? Login</Text>
+            <TouchableOpacity style={styles.loginRedirect} onPress={() => router.push("/login")}>
+                <Text style={styles.loginText}>Already have an account? Login</Text>
             </TouchableOpacity>
         </View>
     );
@@ -179,69 +166,75 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#ffffff",
+        paddingHorizontal: width * 0.08,
     },
-    title: {
-        fontSize: 24,
+    header: {
+        fontSize: width * 0.07,
         fontWeight: "bold",
+        color: "#2B4B40",
         textAlign: "center",
-        marginBottom: 20,
+        marginBottom: height * 0.05,
+    },
+    label: {
+        fontSize: 16,
+        color: "#9D9D9D",
+        marginLeft: width * 0.02,
+        marginBottom: height * 0.005,
     },
     input: {
-        height: 50,
-        borderColor: "#ccc",
+        width: "100%",
+        padding: width * 0.04,
+        borderRadius: 16,
+        marginVertical: height * 0.01,
         borderWidth: 1,
-        borderRadius: 5,
-        marginBottom: 15,
-        paddingLeft: 10,
-        backgroundColor: "#fff",
-    },
-    label:{
-
-    },
-    dateText: {
-        fontSize: 16,
-        color: "#aaa",
+        borderColor: "#E8F1EE",
+        backgroundColor: "#E8F1EE",
+        fontSize: width * 0.04,
     },
     tcContainer: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: 20,
+        marginVertical: height * 0.01,
+        marginLeft: 5,
     },
-    tcText: {
-        fontSize: 14,
-        marginRight: 10,
-    },
-    tcCheckbox: {
-        width: 20,
-        height: 20,
+    checkbox: {
+        width: 22,
+        height: 22,
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: "#2B4B40",
         alignItems: "center",
         justifyContent: "center",
+        marginRight: 12,
     },
-    tcChecked: {
+    checkboxTick: {
         fontSize: 16,
         color: "green",
     },
+    tcText: {
+        fontSize: width * 0.04,
+        color: "#9D9D9D",
+    },
     signupButton: {
-        backgroundColor: "#4CAF50",
-        paddingVertical: 12,
-        borderRadius: 5,
+        width: "100%",
+        backgroundColor: "#2B4B40",
+        padding: height * 0.016,
+        borderRadius: 30,
         alignItems: "center",
+        marginTop: height * 0.02,
     },
     signupButtonText: {
         color: "#fff",
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: "bold",
     },
-    signupTextContainer: {
-        marginTop: 20,
+    loginRedirect: {
         alignItems: "center",
+        marginTop: height * 0.03,
     },
-    signupText: {
-        color: "#007BFF",
-        fontSize: 14,
+    loginText: {
+        color: "#2B4B40",
+        fontWeight: "600",
+        fontSize: width * 0.04,
     },
 });

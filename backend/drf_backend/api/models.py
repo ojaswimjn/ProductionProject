@@ -161,11 +161,12 @@ class PickUpSlot(models.Model):
 # Reward Model
 class Reward(models.Model):
     reward_id = models.AutoField(primary_key=True)
-    request_date = models.DateField()
+    points = models.IntegerField(default =0)
+    created_date = models.DateField(default=timezone.now)
     reward_status = models.CharField(max_length=50)
-    expiry_date = models.DateTimeField()
+    updated_date = models.DateField(default=timezone.now)
     description = models.CharField(max_length=250, null=True)
-    # user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Reward {self.reward_id}"

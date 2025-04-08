@@ -17,14 +17,14 @@ export default function ImagePickerExample() {
     if (pickerType === "camera") {
       result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
-        aspect: [4, 3],
+        aspect: [3, 4],
         quality: 1,
       });
     } else {
       result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
+        aspect: [3, 4],
         quality: 1,
       });
     }
@@ -39,8 +39,8 @@ export default function ImagePickerExample() {
         router.push({
           pathname: "/trashPrediction",
           params: {
-            image: selectedImage,
-            response: JSON.stringify(response), // Stringify the response object
+            image: imageUri,  // Use the freshly captured image URI
+            response: JSON.stringify(response),
           },
         });      
       }

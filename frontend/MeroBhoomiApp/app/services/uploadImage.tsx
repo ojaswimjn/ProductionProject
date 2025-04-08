@@ -1,6 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
+import { API_BASEURL } from "../authDisplayService";
+
 
 // Function to upload an image to the backend
 const uploadImage = async (imageUri: string) => {
@@ -29,7 +31,7 @@ const uploadImage = async (imageUri: string) => {
 
     // Send the POST request to the backend
     const response = await axios.post(
-      'http://192.168.10.68:8000/api/user/uploadimage/', // Replace with your API endpoint
+      `${API_BASEURL}/user/uploadimage/`,  // ✅ Use the base URL here
       formData, // Pass the FormData object as the body
       {
         headers: {

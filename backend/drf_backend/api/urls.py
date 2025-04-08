@@ -1,7 +1,7 @@
 from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -9,6 +9,9 @@ router = routers.DefaultRouter()
 router.register(r'waste-category', WasteCategoryViewSet)
 # router.register(r'manuscripts', ManuscriptViewSet.as_view(), name='manuscripts')
 router.register(r'pickuprequest', PickupRequestViewSet, basename='pickuprequest')
+router.register(r'reward', RewardViewSet, basename='reward')
+
+
 
 
 urlpatterns = [
@@ -26,6 +29,9 @@ urlpatterns = [
     path('sendotp/', SendOTPView.as_view(), name='sendotp'),
     path('resetpassword/',VerifyOTPAndResetPasswordView.as_view(), name = 'resetpassword'),
     path('otpverify/',VerifyOTPView.as_view(), name = 'otpverify'),
+
+    path('reward/updatereward/', RewardViewSet.as_view({'patch': 'update_reward'}), name='updatereward')
+
 
 ]
 

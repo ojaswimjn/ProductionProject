@@ -18,11 +18,9 @@ from django.contrib.auth import get_user_model
 import random
 from django.core.cache import cache  # ✅ Import cache to store OTP
 from django.http import QueryDict
+from django.utils import timezone
+from rest_framework.decorators import action
 
-
-
-
- 
 
 #generate token manually
 def get_tokens_for_user(user):
@@ -39,6 +37,17 @@ class UserRegistrationView(APIView):
         serializer = UserRegistrationSerializer(data = request.data)
         if serializer.is_valid(raise_exception =True):
             user = serializer.save()
+
+            # Create the Reward for the newly registered user with 0 points
+            Reward.objects.create(
+                points=0,  # Default points
+                created_date=timezone.now().date(),
+                reward_status="Pending",  # Set your desired default status
+                updated_date=timezone.now(),
+                description="Initial reward for registration",
+                user_id=user,
+            )
+            
             token = get_tokens_for_user(user)
             return Response({'token':token, 'success': 'User registered successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
@@ -356,6 +365,32 @@ class PickUpSlotViewSet(viewsets.ModelViewSet):
 class RewardViewSet(viewsets.ModelViewSet):
     queryset = Reward.objects.all()
     serializer_class = RewardSerializer
+
+    @action(detail=False, methods=['patch'])
+    def update_reward(self, request, pk=None):
+        reward_id=request.data.get('reward_id')
+        points = request.data.get('points')
+        description = request.data.get('description')
+
+        if not reward_id:
+            return Response({"error":"Reward id is required, unable to locate"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            #fetch the reward object for thegiven reward_id
+            reward = Reward.objects.get(id=reward_id)
+
+            if points is not None:
+                reward.points += points
+            if description:
+                reward.description = description
+            reward.save()
+
+            return Response(RewardSerializer(reward).data, status=status.HTTP_200_OK)
+
+        except Reward.DoesNotExist:
+            return Response({"error": "Reward does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+            
 
 #Reedemption ViewSet
 class ReedemptionViewset(viewsets.ModelViewSet):
