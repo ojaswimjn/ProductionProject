@@ -164,7 +164,7 @@ class Reward(models.Model):
     points = models.IntegerField(default =0)
     created_date = models.DateField(default=timezone.now)
     reward_status = models.CharField(max_length=50)
-    updated_date = models.DateField(default=timezone.now)
+    updated_date = models.DateField(default=timezone.now )
     description = models.CharField(max_length=250, null=True)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 

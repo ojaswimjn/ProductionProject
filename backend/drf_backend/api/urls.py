@@ -30,10 +30,8 @@ urlpatterns = [
     path('resetpassword/',VerifyOTPAndResetPasswordView.as_view(), name = 'resetpassword'),
     path('otpverify/',VerifyOTPView.as_view(), name = 'otpverify'),
 
-    path('reward/updatereward/', RewardViewSet.as_view({'patch': 'update_reward'}), name='updatereward')
+    # path('reward/updatereward/', RewardViewSet.as_view({'patch': 'update_reward'}), name='updatereward')
 
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

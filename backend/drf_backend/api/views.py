@@ -366,23 +366,26 @@ class RewardViewSet(viewsets.ModelViewSet):
     queryset = Reward.objects.all()
     serializer_class = RewardSerializer
 
-    @action(detail=False, methods=['patch'])
+    @action(detail=False, methods=['patch'], url_path='updatereward')
     def update_reward(self, request, pk=None):
-        reward_id=request.data.get('reward_id')
+        user_id=request.data.get('user_id')
         points = request.data.get('points')
         description = request.data.get('description')
+        print(points)
 
-        if not reward_id:
-            return Response({"error":"Reward id is required, unable to locate"}, status=status.HTTP_400_BAD_REQUEST)
+        if not user_id:
+            return Response({"error":"user id is required, unable to locate"}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            #fetch the reward object for thegiven reward_id
-            reward = Reward.objects.get(id=reward_id)
+            #fetch the reward object for thegiven user_id
+            reward = Reward.objects.get(user_id=user_id)
 
             if points is not None:
                 reward.points += points
             if description:
                 reward.description = description
+            
+            reward.updated_date=timezone.now().date()
             reward.save()
 
             return Response(RewardSerializer(reward).data, status=status.HTTP_200_OK)
@@ -390,7 +393,13 @@ class RewardViewSet(viewsets.ModelViewSet):
         except Reward.DoesNotExist:
             return Response({"error": "Reward does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-            
+
+    @action(detail=False, methods=['get'], url_path='get-reward')
+    def get_queryset(self):
+        user_id = self.request.query_params.get('user_id', None)
+        if user_id is not None:
+            return Reward.objects.filter(user_id=user_id)
+        return Reward.objects.all() 
 
 #Reedemption ViewSet
 class ReedemptionViewset(viewsets.ModelViewSet):
