@@ -11,7 +11,13 @@ export default function TrashPrediction() {
   const parsedResponse = response ? JSON.parse(response as string) : null;
 
   const [points, setPoints] = useState(0);
+  const [indPoints, setIndPoints]=useState(0);
 
+  const capitalizeFirstLetter = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
+
+  
   useEffect(() => {
     if (parsedResponse) {
       updateRewardPoints(parsedResponse);
@@ -30,6 +36,7 @@ export default function TrashPrediction() {
       pointsToAdd = 0;
     }
 
+    setIndPoints(pointsToAdd)
     try {
       const userProfile = await getUserProfile();
       const userId = userProfile.id;
@@ -68,15 +75,13 @@ export default function TrashPrediction() {
               resizeMode="contain"
             />
             <View style={styles.predictionDetails}>
-              <Text style={styles.predictionText}>
-                Category: {parsedResponse.category_name}
+              <Text style={styles.categoryText}>
+                {capitalizeFirstLetter(parsedResponse.category_name)}
               </Text>
               <Text style={styles.predictionText}>
-                Accuracy: {parsedResponse.accuracy_score}
+              Accuracy: {parsedResponse.accuracy_score.toFixed(3)}
               </Text>
-              <Text style={styles.predictionText}>
-                Class Index: {parsedResponse.predicted_class_index}
-              </Text>
+              
               <Text style={styles.recyclingNote}>
                 Recycling this type of item helps reduce waste and conserve
                 resources.
@@ -85,18 +90,18 @@ export default function TrashPrediction() {
           </View>
         )}
 
-        <Text style={styles.pointsEarned}>Points Earned: {points}</Text>
+        <Text style={styles.pointsEarned}>Points Earned </Text>
 
         <View style={styles.pointsContainer}>
           <View style={styles.pointsLeft}>
-            <Text style={styles.earnedText}>You earned {points} points</Text>
+            <Text style={styles.earnedText}>{indPoints} points</Text>
             <Text style={styles.totalText}>Total: {points}</Text>
             <Text style={styles.coinInfo}>
-              For each recycled item, you get a different amount of coins.
+              For each recycled item, you get a different amount of coins based on the accuracy. To get higher points upload best angled single image and recycle it.
             </Text>
           </View>
           <Image
-            source={require("../assets/images/coins.jpg")} // replace with your image path
+            source={require("../assets/images/coins.webp")} // replace with your image path
             style={styles.coinImage}
             resizeMode="contain"
           />
@@ -122,66 +127,74 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 15,
+    marginVertical: 8,
   },
   predictionContainer: {
     flexDirection: "row",
     backgroundColor: "#ffffff",
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 15,
     marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowColor: "#d9d9d9",
+    shadowOffset: { width: 0, height: 4},
+    shadowOpacity: 0.04,
+    shadowRadius: 0,
+    elevation: 12  ,
   },
   image: {
-    width: 120,
-    height: 120,
+    width: 130,
+    height: 160,
     borderRadius: 10,
-    marginRight: 15,
+    marginRight: 20,
   },
   predictionDetails: {
     flex: 1,
     justifyContent: "center",
   },
+  categoryText: {
+    fontSize: 20,
+    // marginBottom: 0,
+    fontWeight: 500,
+    
+  },
   predictionText: {
     fontSize: 16,
     marginBottom: 4,
+    
   },
   recyclingNote: {
     fontSize: 14,
     color: "#666",
     marginTop: 10,
+    // textAlign: "justify"
+
   },
   pointsEarned: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 10,
-    textAlign: "center",
+    marginBottom: 15,
+    // textAlign: "center",
   },
   pointsContainer: {
     flexDirection: "row",
     backgroundColor: "#ffffff",
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 15,
     marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowColor: "#d9d9d9",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 12,
     alignItems: "center",
   },
   pointsLeft: {
     flex: 1,
   },
   earnedText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   totalText: {
@@ -190,13 +203,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   coinInfo: {
-    fontSize: 13,
+    fontSize: 14,
     color: "#888",
     marginTop: 8,
+    textAlign: "justify"
   },
   coinImage: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 140,
     marginLeft: 10,
   },
   tipContainer: {

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Image, View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { useState,useEffect } from 'react';
+import { Button, Image, View, StyleSheet, Text, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { CameraType, useCameraPermissions } from 'expo-camera';
 import uploadImage from '../services/uploadImage'; // Import the upload function
@@ -11,6 +11,7 @@ export default function ImagePickerExample() {
   const [permission, requestPermission] = useCameraPermissions();
   const [selectedImage, setSelectedImage] = useState<string | null>(null); // Corrected type
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImagePick = async (pickerType: "camera" | "gallery") => { // Explicitly typed
     let result;
@@ -31,19 +32,31 @@ export default function ImagePickerExample() {
 
     if (!result.canceled) {
       const imageUri = result.assets[0].uri;
+      setIsLoading(true)
       setSelectedImage(imageUri); // Corrected state update
       console.log("Selected Image URI:", imageUri);
-      const response = await uploadImage(imageUri); // Upload image after selecting it
 
-      if(response){
-        router.push({
-          pathname: "/trashPrediction",
-          params: {
-            image: imageUri,  // Use the freshly captured image URI
-            response: JSON.stringify(response),
-          },
-        });      
+      try{
+        const response = await uploadImage(imageUri); // Upload image after selecting it
+
+        if(response){
+          router.push({
+            pathname: "/trashPrediction",
+            params: {
+              image: imageUri,  // Use the freshly captured image URI
+              response: JSON.stringify(response),
+            },
+          });      
+        }
+      }catch(error : any){
+        console.error("Error uploading image:", error);
+        alert("Failed to upload image. Please try again.");
       }
+      finally {
+        // Hide the loading indicator after navigation or failure
+        setIsLoading(false);
+      }
+
     }
   };
 
@@ -66,10 +79,14 @@ export default function ImagePickerExample() {
       <Text style={styles.overlayText}>Identify Your Trash</Text>
 
       {/* Preview the selected image */}
+      {isLoading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#2B4B40" />
+          <Text style={styles.loadingText}>Uploading...</Text>
+        </View>
+       )}
       
-      {selectedImage && (
-        <Image source={{ uri: selectedImage }} style={styles.previewImage} />
-      )}
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => handleImagePick("camera")}>
           <Text style={styles.buttonText}>Open Camera</Text>
@@ -131,4 +148,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingBottom: 10,
   },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: 200,
+  },
+  
+  
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#2B4B40",
+  },
+  
 });
