@@ -10,29 +10,59 @@ import {
 } from "react-native";
 import axios from "axios";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { API_BASEURL } from "../authDisplayService";
+import { getUserProfile } from "../services/authDisplayProfile";
+import { useRouter, useLocalSearchParams } from "expo-router"; 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
+
+
 
 const { width, height } = Dimensions.get("window");
 
 const ScheduleWaste = () => {
+
+  const router = useRouter();
+  const params = useLocalSearchParams();
+
+  const [latitude, setLatitude] = useState<number | null > (null);
+  const [longitude, setLongitude] = useState<number | null > (null);
+
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [wasteType, setWasteType] = useState("");
   const [weight, setWeight] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [userId] = useState(2);
+  const [userId, setUserId] = useState();
+
+  useEffect(() => {
+    if (params.latitude && params.longitude) {
+      setLatitude(parseFloat(params.latitude as string));
+      setLongitude(parseFloat(params.longitude as string));
+    }
+  }, [params]);
 
   useEffect(() => {
     fetchAvailableDates();
+    fetchUserId();
   }, []);
 
   const fetchAvailableDates = async () => {
     try {
-      const response = await axios.get("http://192.168.10.68:8000/api/availabledates/");
+      const response = await axios.get(`${API_BASEURL}/availabledates/`);
       setAvailableDates(response.data.available_dates);
     } catch (error) {
       console.error("Error fetching available dates:", error);
     }
   };
+
+  const fetchUserId = async () =>{
+    const userProfile = await getUserProfile();
+    const user_id = userProfile.id;
+    setUserId(user_id);
+  }
+  
 
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
@@ -53,18 +83,31 @@ const ScheduleWaste = () => {
       return;
     }
 
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    if (!accessToken) {
+      Alert.alert("Error", "User not authenticated");
+      return;
+    }
+
     const requestData = {
       request_date: selectedDate,
       request_status: "Pending",
       weight: weight,
       waste_type: wasteType,
-      latitude: 37.7749,
-      longitude: -122.4194,
+      latitude: latitude,
+      longitude: longitude,
       user_id: userId,
     };
 
     try {
-      await axios.post("http://192.168.10.68:8000/api/pickuprequest/", requestData);
+      await axios.post(`${API_BASEURL}/pickuprequest/`, requestData,
+        {
+          headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          }
+        }
+      );
       Alert.alert("Success", "Pickup request submitted successfully!");
     } catch (error) {
       console.error("Error submitting pickup request:", error);
@@ -107,6 +150,24 @@ const ScheduleWaste = () => {
         onChangeText={setWeight}
         keyboardType="numeric"
       />
+
+      <Text style={styles.label}>Select Location</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={()=> router.push("/locationMap")}
+      >
+
+        <Text style={styles.buttonText}>
+          {latitude && longitude ? "Change location": "Pick location"}
+        </Text>
+
+      </TouchableOpacity>
+
+      {latitude && longitude &&(
+        <Text style={styles.selectedDate}>
+          Selected Location: {latitude.toFixed(4)}, {longitude.toFixed(4)}
+        </Text>
+      )}
 
       <TouchableOpacity style={styles.sendButton} onPress={handlePickupRequest}>
         <Text style={styles.buttonText}>Request Pickup</Text>
