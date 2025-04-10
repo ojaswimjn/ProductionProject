@@ -148,17 +148,26 @@ export default function TrashPrediction() {
             clean materials increases recycling efficiency!
           </Text>
         </View> */}
+      </View>
 
         <View style={styles.recyclingTipTrigger}>
           <TouchableOpacity onPress={toggleTipModal} style={styles.tipHeaderRow}>
             <Text style={styles.tipHeaderText}>Tips on recycling:</Text>
-            <AntDesign name="up" size={20} color="#0077b6" />
+            <AntDesign name="up" size={20} color="#ffff" />
           </TouchableOpacity>
+          <Text style={styles.categoryNameText}>
+                {capitalizeFirstLetter(parsedResponse.category_name)}
+          </Text>
+          <Text style={styles.categoryHashText}>
+            #1
+          </Text>
+
+
 
           {recyclingTips.length>0 ?(
             <Text style={[styles.modalTipText, styles.previewTip]}>
               {recyclingTips[0].description.length >100
-              ? `${recyclingTips[0].description.substring(0, 100)}...` // Limit text to 100 characters
+              ? `${recyclingTips[0].description.substring(0, 150)}...` // Limit text to 100 characters
               : recyclingTips[0].description}
         </Text>
 
@@ -207,7 +216,7 @@ export default function TrashPrediction() {
         </Modal>
 
 
-      </View>
+      
     </View>
   );
 
@@ -330,10 +339,17 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   recyclingTipTrigger: {
-    backgroundColor: "#d0f0fd",
-    padding: 14,
-    borderRadius: 14,
+    backgroundColor: "#2B4B40",
+    padding: 20,
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
     marginBottom: 30,
+    shadowColor: "#d9d9d9",
+    shadowOffset: { width: 0, height: -90},
+    shadowOpacity: 0.04,
+    shadowRadius: 0,
+    elevation: 12  ,
+
   },
   
   tipHeaderRow: {
@@ -341,11 +357,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  categoryNameText: {
+    fontSize: 20,
+    marginBottom: 0,
+    fontWeight: 500,
+    color: "#ffffff",
+
+    
+  },
+  categoryHashText: {
+    fontSize: 20,
+    marginTop: 15,
+    fontWeight: 500,
+    color: "#ffff",
+
+    
+  },
   
   tipHeaderText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#0077b6",
+    color: "#ffffff",
+    marginBottom: 10,
+
   },
   
   bottomModal: {
