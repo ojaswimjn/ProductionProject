@@ -22,7 +22,7 @@ export default function TrashPrediction() {
   const [indPoints, setIndPoints]=useState(0);
 
   const [isTipModalVisible, setTipModalVisible] = useState(false);
-  const [recyclingTips, setRecyclingTips] = useState([]);
+  const [recyclingTips, setRecyclingTips] = useState<RecyclingTip[]>([]);
 
   const toggleTipModal = () => {
     setTipModalVisible(!isTipModalVisible);
@@ -43,9 +43,12 @@ export default function TrashPrediction() {
 
   const fetchRecyclingTips = async () => {
     try{
-      const response = await axios.get(`${API_BASEURL}/wastecategory/?${parsedResponse.waste}`)
-      const tips = response.data; 
-      setRecyclingTips(tips)
+      const response = await axios.get(`${API_BASEURL}/wastecategory/?category_name=${parsedResponse.category_name}`)
+      const allTips = response.data; 
+
+      const randomizedTips = allTips.sort(()=> Math.random()  - 0.5 ).slice(0, 7);
+      setRecyclingTips(randomizedTips)
+      console.log(randomizedTips)
     }catch(error : any){
       console.error("Error fetching recycling tips", error);
       alert("Failed to fetch recycling tips.")
@@ -93,7 +96,7 @@ export default function TrashPrediction() {
   };
 
   return (
-    <ScrollView style={styles.scrollContainer}>
+    <View style={styles.scrollContainer}>
       <View style={styles.mainContainer}>
         <Text style={styles.title}>Your Trash Prediction</Text>
 
@@ -151,14 +154,19 @@ export default function TrashPrediction() {
             <Text style={styles.tipHeaderText}>Tips on recycling:</Text>
             <AntDesign name="up" size={20} color="#0077b6" />
           </TouchableOpacity>
-          <Text style={styles.modalTipText}>
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
 
-              </Text>
+          {recyclingTips.length>0 ?(
+            <Text style={[styles.modalTipText, styles.previewTip]}>
+              {recyclingTips[0].description.length >100
+              ? `${recyclingTips[0].description.substring(0, 100)}...` // Limit text to 100 characters
+              : recyclingTips[0].description}
+        </Text>
+
+          ): (
+            <Text style={[styles.modalTipText, styles.previewTip]}>Loading recycling tips...</Text>
+
+          )}
+          
         </View>
 
         <Modal
@@ -179,8 +187,11 @@ export default function TrashPrediction() {
               <Text style={styles.modalTipText}>
               {recyclingTips.length > 0 ? (
                 recyclingTips.map((tip, index) => (
-                  <Text key={index} style={styles.modalTipText}>
-                    {tip.description} {/* Change 'tip' to 'description' */}
+                  <Text key={index} style={styles.modalTipItem}>
+                    <View key={index} style={styles.tipItem}>
+                      <Text style={styles.tipBullet}>•</Text>
+                      <Text style={styles.modalTipText}>{tip.description}</Text>
+                    </View>
                   </Text>
                 ))
               ) : (
@@ -197,7 +208,7 @@ export default function TrashPrediction() {
 
 
       </View>
-    </ScrollView>
+    </View>
   );
 
 
@@ -379,12 +390,28 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: 6,
   },
-  
+  modalTipItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    fontSize: 16,
+    color: "#444",
+    marginBottom: 8,
+  },
   modalTipText: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#444",
     marginTop: 4,
     textAlign: "justify",
+  },
+  tipItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  tipBullet: {
+    fontSize: 20,
+    color: "#0077b6",
+    marginRight: 8,
   },
   
   confirmBtnModal: {
@@ -399,6 +426,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
     fontWeight: "bold",
+  },
+  previewTip: {
+    color: "#888", // Lighter color to indicate this is just a preview
+    opacity: 0.7, // Slightly reduce opacity for a faded look
   },
   
 });
