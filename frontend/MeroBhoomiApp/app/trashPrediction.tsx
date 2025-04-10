@@ -149,34 +149,44 @@ export default function TrashPrediction() {
           </Text>
         </View> */}
       </View>
-
-        <View style={styles.recyclingTipTrigger}>
-          <TouchableOpacity onPress={toggleTipModal} style={styles.tipHeaderRow}>
-            <Text style={styles.tipHeaderText}>Tips on recycling:</Text>
-            <AntDesign name="up" size={20} color="#ffff" />
-          </TouchableOpacity>
-          <Text style={styles.categoryNameText}>
-                {capitalizeFirstLetter(parsedResponse.category_name)}
-          </Text>
-          <Text style={styles.categoryHashText}>
-            #1
-          </Text>
-
+          <View style={styles.recyclingTipTrigger}>
+            <TouchableOpacity onPress={toggleTipModal} style={styles.tipHeaderRow}>
+              <Text style={styles.tipHeaderText}>Tips on recycling:</Text>
+              <AntDesign name="up" size={20} color="#ffff" />
+            </TouchableOpacity>
+            <Text style={styles.categoryNameText}>
+                  {capitalizeFirstLetter(parsedResponse.category_name)}
+            </Text>
+            <Text style={styles.categoryHashText}>
+              #1
+            </Text>
 
 
-          {recyclingTips.length>0 ?(
-            <Text style={[styles.modalTipText, styles.previewTip]}>
-              {recyclingTips[0].description.length >100
-              ? `${recyclingTips[0].description.substring(0, 150)}...` // Limit text to 100 characters
-              : recyclingTips[0].description}
-        </Text>
 
-          ): (
-            <Text style={[styles.modalTipText, styles.previewTip]}>Loading recycling tips...</Text>
+            {recyclingTips.length > 0 ? (
+              <>
+                {recyclingTips.slice(0, 2).map((tip, index) => {
+                  const limitedText =
+                    tip.description.length > 100
+                      ? `${tip.description.substring(0, 105)}...`
+                      : tip.description;
 
-          )}
-          
-        </View>
+                  return (
+                    <Text key={index} style={[styles.modalTipText, styles.previewTip]}>
+                      {limitedText}
+                    </Text>
+                  );
+                })}
+              </>
+            ) : (
+              <Text style={[styles.modalTipText, styles.previewTip]}>
+                Loading recycling tips...
+              </Text>
+            )}
+
+            
+          </View>
+
 
         <Modal
           isVisible={isTipModalVisible}
@@ -188,7 +198,7 @@ export default function TrashPrediction() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Recycling Tips</Text>
               <TouchableOpacity onPress={toggleTipModal}>
-                <AntDesign name="close" size={24} color="#333" />
+                <AntDesign name="close" size={24} color="#fff" />
               </TouchableOpacity>
             </View>
 
@@ -319,7 +329,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   tipContainer: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#2B4B40",
     borderRadius: 12,
     padding: 15,
     shadowColor: "#000",
@@ -341,8 +351,8 @@ const styles = StyleSheet.create({
   recyclingTipTrigger: {
     backgroundColor: "#2B4B40",
     padding: 20,
-    borderTopRightRadius: 25,
-    borderTopLeftRadius: 25,
+    borderTopRightRadius: 35,
+    borderTopLeftRadius: 35,
     marginBottom: 30,
     shadowColor: "#d9d9d9",
     shadowOffset: { width: 0, height: -90},
@@ -388,10 +398,10 @@ const styles = StyleSheet.create({
   },
   
   modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    backgroundColor: "#2B4B40",
+    padding: 25,
+    borderTopLeftRadius: 34,
+    borderTopRightRadius: 34,
     maxHeight: "90%",
   },
   
@@ -405,7 +415,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#0077b6",
+    color: "#ffffff",
   },
   
   modalScroll: {
@@ -428,14 +438,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     fontSize: 16,
-    color: "#444",
+    color: "#fff",
     marginBottom: 8,
   },
   modalTipText: {
     fontSize: 16,
-    color: "#444",
+    color: "#fff",
     marginTop: 4,
     textAlign: "justify",
+    marginBottom: 10,
   },
   tipItem: {
     flexDirection: "row",
@@ -444,12 +455,12 @@ const styles = StyleSheet.create({
   },
   tipBullet: {
     fontSize: 20,
-    color: "#0077b6",
+    color: "#fff",
     marginRight: 8,
   },
   
   confirmBtnModal: {
-    backgroundColor: "#90caf9",
+    backgroundColor: "#E8F1EE",
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 15,
@@ -457,7 +468,7 @@ const styles = StyleSheet.create({
   },
   
   confirmText: {
-    color: "#fff",
+    color: "#2B4B40",
     fontSize: 15,
     fontWeight: "bold",
   },
