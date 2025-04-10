@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
-router.register(r'waste-category', WasteCategoryViewSet)
+router.register(r'wastecategory', WasteCategoryViewSet, basename='wastecategory')
 # router.register(r'manuscripts', ManuscriptViewSet.as_view(), name='manuscripts')
 router.register(r'pickuprequest', PickupRequestViewSet, basename='pickuprequest')
 router.register(r'reward', RewardViewSet, basename='reward')

@@ -297,16 +297,15 @@ class WasteItemPredictionView(APIView):
 
 # WasteItem ViewSet
 class WasteCategoryViewSet(viewsets.ModelViewSet):
-    queryset = WasteCategory.objects.all()
     serializer_class = WasteCategorySerializer  
 
-    def destroy(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object()
-            self.perform_destroy(instance)
-        except Http404:
-            pass
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_queryset(self):
+        queryset = WasteCategory.objects.all()
+        category_name=self.request.query_params.get('category_name',None)
+        if category_name:
+            queryset = queryset.filter(category_name=category_name)
+        return queryset
+
 
 # WasteItem ViewSet
 class WasteItemViewSet(viewsets.ModelViewSet):

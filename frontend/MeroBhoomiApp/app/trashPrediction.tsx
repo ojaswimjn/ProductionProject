@@ -9,6 +9,10 @@ import Modal from "react-native-modal";
 import { AntDesign } from "@expo/vector-icons";
 
 
+interface RecyclingTip {
+  category_name:string
+  description: string;
+}
 
 export default function TrashPrediction() {
   const { image, response } = useLocalSearchParams();
@@ -18,6 +22,8 @@ export default function TrashPrediction() {
   const [indPoints, setIndPoints]=useState(0);
 
   const [isTipModalVisible, setTipModalVisible] = useState(false);
+  const [recyclingTips, setRecyclingTips] = useState([]);
+
   const toggleTipModal = () => {
     setTipModalVisible(!isTipModalVisible);
   };
@@ -32,7 +38,21 @@ export default function TrashPrediction() {
     if (parsedResponse) {
       updateRewardPoints(parsedResponse);
     }
+    fetchRecyclingTips();
   }, []);
+
+  const fetchRecyclingTips = async () => {
+    try{
+      const response = await axios.get(`${API_BASEURL}/wastecategory/?${parsedResponse.waste}`)
+      const tips = response.data; 
+      setRecyclingTips(tips)
+    }catch(error : any){
+      console.error("Error fetching recycling tips", error);
+      alert("Failed to fetch recycling tips.")
+    }
+
+
+  }
 
   const updateRewardPoints = async (parsedResponse: any) => {
     const accuracy_score = parsedResponse.accuracy_score;
@@ -155,36 +175,18 @@ export default function TrashPrediction() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.modalScroll}>
-              <Text style={styles.modalCategory}>Plastic</Text>
-              <Text style={styles.modalTipTitle}>#1</Text>
+            <ScrollView style={styles.modalScroll}>     
               <Text style={styles.modalTipText}>
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-
+              {recyclingTips.length > 0 ? (
+                recyclingTips.map((tip, index) => (
+                  <Text key={index} style={styles.modalTipText}>
+                    {tip.description} {/* Change 'tip' to 'description' */}
+                  </Text>
+                ))
+              ) : (
+                <Text style={styles.modalTipText}>Loading recycling tips...</Text>
+              )}
               </Text>
-
-              <Text style={styles.modalTipText}>
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-
-              </Text>
-
-              <Text style={styles.modalTipText}>
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
-
-              </Text>
-
-              {/* You can map through multiple tips here if needed */}
             </ScrollView>
 
             <TouchableOpacity style={styles.confirmBtnModal} onPress={toggleTipModal}>
