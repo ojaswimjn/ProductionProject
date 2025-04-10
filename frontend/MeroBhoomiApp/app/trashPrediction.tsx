@@ -1,10 +1,14 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { API_BASEURL } from "./authDisplayService";
 import { getUserProfile } from "./services/authDisplayProfile";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { getRewardsPoint } from "./services/getRewardsPointService";
+import Modal from "react-native-modal";
+import { AntDesign } from "@expo/vector-icons";
+
+
 
 export default function TrashPrediction() {
   const { image, response } = useLocalSearchParams();
@@ -12,6 +16,12 @@ export default function TrashPrediction() {
 
   const [points, setPoints] = useState(0);
   const [indPoints, setIndPoints]=useState(0);
+
+  const [isTipModalVisible, setTipModalVisible] = useState(false);
+  const toggleTipModal = () => {
+    setTipModalVisible(!isTipModalVisible);
+  };
+
 
   const capitalizeFirstLetter = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
@@ -107,16 +117,89 @@ export default function TrashPrediction() {
           />
         </View>
 
-        <View style={styles.tipContainer}>
+
+        {/* <View style={styles.tipContainer}>
           <Text style={styles.tipHeader}>♻️ Recycling Tip</Text>
           <Text style={styles.tipText}>
             Always rinse recyclable containers to avoid contamination. Sorting
             clean materials increases recycling efficiency!
           </Text>
+        </View> */}
+
+        <View style={styles.recyclingTipTrigger}>
+          <TouchableOpacity onPress={toggleTipModal} style={styles.tipHeaderRow}>
+            <Text style={styles.tipHeaderText}>Tips on recycling:</Text>
+            <AntDesign name="up" size={20} color="#0077b6" />
+          </TouchableOpacity>
+          <Text style={styles.modalTipText}>
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+
+              </Text>
         </View>
+
+        <Modal
+          isVisible={isTipModalVisible}
+          onBackdropPress={toggleTipModal}
+          style={styles.bottomModal}
+          backdropOpacity={0.3}
+        >
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Recycling Tips</Text>
+              <TouchableOpacity onPress={toggleTipModal}>
+                <AntDesign name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalScroll}>
+              <Text style={styles.modalCategory}>Plastic</Text>
+              <Text style={styles.modalTipTitle}>#1</Text>
+              <Text style={styles.modalTipText}>
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+
+              </Text>
+
+              <Text style={styles.modalTipText}>
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+
+              </Text>
+
+              <Text style={styles.modalTipText}>
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+                Twist on the bottle caps before tossing them in the bin to make it easier for recyclers.
+
+              </Text>
+
+              {/* You can map through multiple tips here if needed */}
+            </ScrollView>
+
+            <TouchableOpacity style={styles.confirmBtnModal} onPress={toggleTipModal}>
+              <Text style={styles.confirmText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+
       </View>
     </ScrollView>
   );
+
+
+
 }
 
 const styles = StyleSheet.create({
@@ -233,4 +316,87 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
   },
+  recyclingTipTrigger: {
+    backgroundColor: "#d0f0fd",
+    padding: 14,
+    borderRadius: 14,
+    marginBottom: 30,
+  },
+  
+  tipHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  
+  tipHeaderText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#0077b6",
+  },
+  
+  bottomModal: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
+  
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: "90%",
+  },
+  
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#0077b6",
+  },
+  
+  modalScroll: {
+    paddingBottom: 20,
+  },
+  
+  modalCategory: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    marginTop: 10,
+  },
+  
+  modalTipTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginTop: 6,
+  },
+  
+  modalTipText: {
+    fontSize: 14,
+    color: "#444",
+    marginTop: 4,
+    textAlign: "justify",
+  },
+  
+  confirmBtnModal: {
+    backgroundColor: "#90caf9",
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 15,
+    alignItems: "center",
+  },
+  
+  confirmText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  
 });
