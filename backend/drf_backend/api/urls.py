@@ -1,5 +1,5 @@
 from django.urls import path, include
-from api.views import WasteCategoryViewSet
+from api.views import WasteCategoryViewSet, save_expo_push_token
 from rest_framework import routers
 from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet
 from django.conf import settings
@@ -31,6 +31,9 @@ urlpatterns = [
     path('otpverify/',VerifyOTPView.as_view(), name = 'otpverify'),
 
     # path('reward/updatereward/', RewardViewSet.as_view({'patch': 'update_reward'}), name='updatereward')
+
+    path('save-push-token/', save_expo_push_token),
+
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

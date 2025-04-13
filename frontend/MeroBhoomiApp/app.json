@@ -15,9 +15,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff",
-        "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
-
-      }
+        "permissions": [
+          "READ_EXTERNAL_STORAGE",
+          "WRITE_EXTERNAL_STORAGE"
+        ]
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -34,10 +40,9 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-
       ],
       [
-      "expo-image-picker",
+        "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
@@ -51,15 +56,21 @@
         }
       ]
     ],
-    
-
     "experiments": {
       "typedRoutes": true
     },
-    
-    "expo-location":{
-    "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-    "isAndroidBackgroundLocationEnabled":true
-    }
+    "expo-location": {
+      "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+      "isAndroidBackgroundLocationEnabled": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "224bd123-42c4-491e-b2e3-4ffd82fd3216"
+      }
+    },
+    "owner": "ojaswimjn"
   }
 }

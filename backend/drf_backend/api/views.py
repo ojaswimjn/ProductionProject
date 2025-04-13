@@ -20,6 +20,8 @@ from django.core.cache import cache  # ✅ Import cache to store OTP
 from django.http import QueryDict
 from django.utils import timezone
 from rest_framework.decorators import action
+from rest_framework.decorators import api_view, permission_classes
+
 
 
 #generate token manually
@@ -400,6 +402,8 @@ class RewardViewSet(viewsets.ModelViewSet):
             return Reward.objects.filter(user_id=user_id)
         return Reward.objects.all() 
 
+
+
 #Reedemption ViewSet
 class ReedemptionViewset(viewsets.ModelViewSet):
     queryset = Reedemption.objects.all()
@@ -409,4 +413,20 @@ class ReedemptionViewset(viewsets.ModelViewSet):
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def save_expo_push_token(request):
+    token = request.data.get('token')
+    if not token:
+        return Response({"error": "No token provided"}, status=400)
+
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    profile.expo_push_token = token
+    profile.save()
+
+    return Response({"message": "Push token saved successfully"})
+
 

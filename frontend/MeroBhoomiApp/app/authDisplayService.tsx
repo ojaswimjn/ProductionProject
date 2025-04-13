@@ -1,7 +1,7 @@
 import axios from 'axios';
 // export const API_BASEURL = 'http://10.0.2.2:8000/api';  // For Android emulator
-export const API_BASEURL = 'http://192.168.10.68:8000/api';  // home
-// export const API_BASEURL = 'http:/172.22.17.62:8000/api';  // tbc
+// export const API_BASEURL = 'http://192.168.10.68:8000/api';  // home
+export const API_BASEURL = 'http://172.22.16.246:8000/api';  // tbc
 // const API_BASEURL = "http://172.22.16.40:8000/api"; // Replace with your PC's IP
 
 

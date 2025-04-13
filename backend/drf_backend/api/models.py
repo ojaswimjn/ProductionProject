@@ -23,6 +23,9 @@ class UserManager(BaseUserManager):
 
         user.set_password(password)
         user.save(using=self._db)
+
+        UserProfile.objects.create(user=user)
+
         return user
 
     def create_superuser(self, email, tc, full_name, user_role, date_of_birth=None,  password=None):
@@ -59,6 +62,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_date = models.DateTimeField(auto_now_add=True)  # Set on creation
     updated_date = models.DateTimeField(auto_now=True)  # Set on update
     password =models.CharField(max_length=100)
+    expo_push_token = models.CharField(max_length=255, blank=True, null=True)
+
 
     objects = UserManager()
 
