@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import  Store, PickUpSlot, Reward, Image, WasteItem, WasteCategory, PickupRequest, Reedemption
+from api.models import  Store, PickUpSlot, Reward, Image, WasteItem, WasteCategory, PickupRequest, Reedemption, ExpoPushToken
 from api.models import User
 from django.contrib.auth.hashers import check_password
 from django.db.models import Sum
@@ -159,3 +159,7 @@ class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = '__all__'
+
+#ExpoPushToken Serializer
+class ExpoTokenSerializer(serializers.Serializer):
+    expo_token = serializers.CharField()

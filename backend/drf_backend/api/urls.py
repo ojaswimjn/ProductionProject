@@ -1,9 +1,10 @@
 from django.urls import path, include
-from api.views import WasteCategoryViewSet, save_expo_push_token
+from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView
 from django.conf import settings
 from django.conf.urls.static import static
+from api.views import SendTestNotification
 
 router = routers.DefaultRouter()
 router.register(r'wastecategory', WasteCategoryViewSet, basename='wastecategory')
@@ -30,9 +31,10 @@ urlpatterns = [
     path('resetpassword/',VerifyOTPAndResetPasswordView.as_view(), name = 'resetpassword'),
     path('otpverify/',VerifyOTPView.as_view(), name = 'otpverify'),
 
-    # path('reward/updatereward/', RewardViewSet.as_view({'patch': 'update_reward'}), name='updatereward')
+    path('save-token/', SaveExpoTokenView.as_view()),
+    path('send-test-push/', SendTestNotification.as_view(), name='send_test_push'),
 
-    path('save-push-token/', save_expo_push_token),
+
 
 
 

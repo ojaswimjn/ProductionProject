@@ -4,9 +4,15 @@ import { View, Button, Alert, StyleSheet, TextInput } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
+import { useLocalSearchParams } from "expo-router";
 
 export default function LocationMap() {
   const router = useRouter();
+  const params = useLocalSearchParams();
+
+  console.log(params.selectedDate, params.weight);
+
+
 
   // Define the state types
   const [initialRegion, setInitialRegion] = useState<Region | null>(null);
@@ -51,6 +57,9 @@ export default function LocationMap() {
       params: {
         latitude: markerPosition.latitude.toString(),
         longitude: markerPosition.longitude.toString(),
+        selectedDate: params.selectedDate || "",
+        weight: params.weight || "",
+        wasteType: params.wasteType || "",
       },
     });
   };

@@ -6,43 +6,35 @@ import Header from "@/components/home/Header";
 import WelcomeDash from "@/components/home/WelcomeDash";
 import DataDashboard from "@/components/home/DataDashboard";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { registerForPushNotificationsAsync, setupNotificationHandler } from "../pushNotification";
-
+import { registerForPushTokenAndSend } from "../usePushToken";
 
 export const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
 const HomeScreen = () => {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const setupNotifications = async () => {
-  //     try {
-  //       const accessToken = await AsyncStorage.getItem("accessToken");
-  //       console.log("Access Token: ", accessToken);
+  const tokenGenerator = async ( ) => {
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+      setAccessToken(token);
+      if (!token) {
+        console.log("token not being generated for expo push")
+        return;
+      }
+    }catch (error) {
+      console.error("Error in token generator in index:", error);
+    }
+  }
+  useEffect(() => {
+    tokenGenerator();
+  }, []);
 
-  //       // If the token exists, register for push notifications
-  //       if (accessToken) {
-  //         await registerForPushNotificationsAsync(accessToken); // Register for push notifications
-  //       } else {
-  //         console.log("No access token found");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching access token: ", error);
-  //     }
-  //   };
-
-  //   setupNotifications();
-
-  //   // Set up notification handler for foreground and background
-  //   setupNotificationHandler(); 
-
-  //   // Clean-up function to remove any listeners or clean up tasks
-  //   return () => {
-  //     console.log("HomeScreen clean-up");
-  //     // If you have any listeners or cleanup tasks, you can add them here
-  //   };
-  // }, []); // Empty dependency array means this effect runs only once, on mount
-
-
+  useEffect(() => {
+    console.log(" accessToken in useEffect:", accessToken);
+    if (accessToken) {
+      registerForPushTokenAndSend(accessToken);
+    }
+  }, [accessToken]);
 
   return (
     <View style={styles.container}>

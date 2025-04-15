@@ -26,16 +26,21 @@ const ScheduleWaste = () => {
 
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [wasteType, setWasteType] = useState("");
+  const [wasteType, setWasteType] = useState("organic");
   const [weight, setWeight] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [userId, setUserId] = useState();
+  const [isSuccess, setIsSuccess] = useState(false);
+
 
   useEffect(() => {
     if (params.latitude && params.longitude) {
       setLatitude(parseFloat(params.latitude as string));
       setLongitude(parseFloat(params.longitude as string));
     }
+    if (params.selectedDate) setSelectedDate(params.selectedDate as string);
+    if (params.weight) setWeight(params.weight as string);
+    if (params.wasteType) setWasteType(params.wasteType as string)
   }, [params]);
 
   useEffect(() => {
@@ -87,7 +92,7 @@ const ScheduleWaste = () => {
       request_date: selectedDate,
       request_status: "Pending",
       weight: weight,
-      waste_type: "organic",
+      waste_type: wasteType, // ← use the state here
       latitude: latitude,
       longitude: longitude,
       user_id: userId,
@@ -100,12 +105,32 @@ const ScheduleWaste = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      Alert.alert("Success", "Pickup request submitted successfully!");
+
+      Alert.alert("Success", "Your pickup has been scheduled!");
+      // console.log("reached here")
+      setIsSuccess(true); // trigger the form reset
+
     } catch (error) {
       console.error("Error submitting pickup request:", error);
       Alert.alert("Error", "Failed to submit pickup request");
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setSelectedDate("");
+      setWeight("");
+      setWasteType("organic");
+      setLatitude(null);
+      setLongitude(null);
+  
+      router.replace("/scheduleWaste"); // Reload this page without any params
+
+      setIsSuccess(false); // reset the flag
+
+    }
+  }, [isSuccess]);
+  
 
   return (
     <View style={styles.container}>
@@ -129,8 +154,9 @@ const ScheduleWaste = () => {
       />
 
       <Text style={styles.label}>Waste Type</Text>
-      <Text style={styles.input}>Organic</Text> {/* Non-editable text displaying "Organic" */}
-
+      <View style={styles.input}>
+        <Text style={{ fontSize: width * 0.04 }}>Organic</Text>
+      </View>
 
       <Text style={styles.label}>Weight (kg)</Text>
       <TextInput
@@ -147,7 +173,19 @@ const ScheduleWaste = () => {
       </Text>
 
       <Text style={styles.label}>Select Location</Text>
-      <TouchableOpacity style={styles.button} onPress={() => router.push("/locationMap")}>
+      <TouchableOpacity style={styles.button} onPress={() => 
+        router.push({
+          pathname: "/locationMap",
+          params: {
+            selectedDate,
+            weight,
+            wasteType,
+            latitude: latitude?.toString() || "",
+            longitude: longitude?.toString() || "",
+          },
+        }
+        )       
+      }>
         <Text style={styles.buttonText}>
           {latitude && longitude ? "Change location" : "Pick location"}
         </Text>

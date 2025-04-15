@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'api',
     'rest_framework_simplejwt',
     "corsheaders",
+    'django_cron',
+
     # "MeroBhoomi",
 
 
@@ -230,6 +232,35 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'merobhoomi@gmail.com'  # Replace with your email
 EMAIL_HOST_PASSWORD = 'sxqp ztpn sbhw xuke'
 DEFAULT_FROM_EMAIL = 'merobhoomi@gmail.com'
+
+
+CRON_CLASSES = [
+    'api.cron.PickupDayReminderCronJob',
+]
+
+CRONJOBS = [
+    ('*/1 * * * *', 'api.cron.PickupDayReminderCronJob'),
+]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'pickup_reminder_cron.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
 
 
 

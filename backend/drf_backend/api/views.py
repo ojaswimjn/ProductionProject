@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from .models import  Store, WasteItem, WasteCategory, PickUpSlot, Reward, Image, PickupRequest, Reedemption
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer ,WasteItemSerializer,  WasteCategorySerializer, StoreSerializer, PickUpSlotSerializer, RewardSerializer, ImageSerializer, PickUpRequestSerializer, ReedemptionSerializer, WasteItemDetailSerializer
+from .models import  Store, WasteItem, WasteCategory, PickUpSlot, Reward, Image, PickupRequest, Reedemption, ExpoPushToken  
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer ,WasteItemSerializer,  WasteCategorySerializer, StoreSerializer, PickUpSlotSerializer, RewardSerializer, ImageSerializer, PickUpRequestSerializer, ReedemptionSerializer, WasteItemDetailSerializer, ExpoTokenSerializer
 from .utils import predict_image
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -415,18 +415,27 @@ class StoreViewSet(viewsets.ModelViewSet):
     serializer_class = StoreSerializer
 
 
+class SaveExpoTokenView(APIView):
+    permission_classes = [IsAuthenticated]
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def save_expo_push_token(request):
-    token = request.data.get('token')
-    if not token:
-        return Response({"error": "No token provided"}, status=400)
+    def post(self, request):
+        print("Received data:", request.data)
+        serializer = ExpoTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = serializer.validated_data['expo_token']
+        ExpoPushToken.objects.update_or_create(user=request.user, defaults={'token': token})
+        return Response({"message": "Token saved."})
 
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    profile.expo_push_token = token
-    profile.save()
+from api.utils import notify_user
 
-    return Response({"message": "Push token saved successfully"})
+class SendTestNotification(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        user = request.user
+        result = notify_user(user, "🚀 Hello from Django!", "This is your test push notification!")
+
+        if result is None:
+            return Response({"message": "No push token found for user."}, status=404)
+        return Response({"message": "Push sent!", "expo_response": result})
 

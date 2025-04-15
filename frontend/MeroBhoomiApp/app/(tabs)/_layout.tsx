@@ -1,19 +1,51 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; // Import icons
+import React, { useEffect, useRef } from 'react';
+import { Platform, TouchableOpacity } from 'react-native';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import {TouchableOpacity} from 'react-native';
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
+import { addNotificationReceivedListener, addNotificationResponseReceivedListener, Subscription } from 'expo-notifications';
 
+// ✅ Setup foreground handler (important!)
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function TabLayout() {
+  const notificationListener = useRef<Subscription | null>(null);
+  const responseListener = useRef<Subscription | null>(null);
+
+
   const colorScheme = useColorScheme();
   const router = useRouter();
+
+  useEffect(() => {
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      console.log('📬 Notification received in foreground:', notification);
+    });
+  
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('👆 Notification response (tapped):', response);
+    });
+  
+    return () => {
+      if (notificationListener.current) {
+        notificationListener.current.remove();
+      }
+      if (responseListener.current) {
+        responseListener.current.remove();
+      }
+    };
+  }, []);
 
   return (
     <Tabs
@@ -25,14 +57,12 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',
-            height: 80, // Increase the height of the navbar
-            paddingBottom: 20, // More space for icons
-            paddingTop: 10, // Adjust top padding
+            height: 80,
+            paddingBottom: 20,
+            paddingTop: 10,
           },
           android: {
-            height: 60, // Adjust for Android as well
-            // paddingBottom: 20,
-            // paddingTop: 10,
+            height: 60,
           },
           default: {},
         }),
@@ -52,14 +82,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons size={24} name="calendar-outline" color={color} />,
         }}
       />
-            <Tabs.Screen
+      <Tabs.Screen
         name="scannerScreen"
         options={{
           title: '',
           tabBarButton: () => (
             <TouchableOpacity
-              onPress={() => router.push('/scannerScreen')} // Navigate to scanner screen
-              activeOpacity={0.7} // Slight opacity change on press
+              onPress={() => router.push('/scannerScreen')}
+              activeOpacity={0.7}
               style={{
                 backgroundColor: '#2B4B40',
                 borderRadius: 50,

@@ -24,7 +24,6 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
-        UserProfile.objects.create(user=user)
 
         return user
 
@@ -195,6 +194,15 @@ class Store(models.Model):
 
     def __str__(self):
         return f"Store {self.store_id}"
+
+
+#ExpoPushToken Model
+class ExpoPushToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # ForeignKey to User model
+    token = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.token} Token"
 
 
 

@@ -5,6 +5,10 @@ import numpy as np
 from .models import WasteCategory
 import tensorflow as tf
 
+import requests
+from .models import ExpoPushToken
+
+
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -58,3 +62,23 @@ def predict_image (image_path):
         raise ValueError(f"No mapping found for predicted class index {predicted_class_index}")
 
     return predicted_category_id, accuracy_score
+
+def send_push_notification(expo_token, title, body):
+    message = {
+        'to': expo_token,
+        'sound': 'default',
+        'title': title,
+        'body': body,
+    }
+
+    response = requests.post("https://exp.host/--/api/v2/push/send", json=message)
+    return response.json()
+
+def notify_user(user, title, body):
+    try:
+        token_obj = ExpoPushToken.objects.get(user=user)
+        return send_push_notification(token_obj.token, title, body)
+    except ExpoPushToken.DoesNotExist:
+        return None
+
+        

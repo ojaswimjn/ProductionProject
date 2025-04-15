@@ -13,7 +13,7 @@ const getUserProfile = async () => {
     });
 
     // console.log(AsyncStorage.getItem('accessToken'));
-    console.log("datadata", response.data)
+    // console.log("datadata", response.data)
     return response.data;
   } catch (error) {
     console.error("Error fetching user profile:", error);
