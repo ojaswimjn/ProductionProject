@@ -14,6 +14,11 @@ const ResetPassword = () => {
     // Retrieve email and otp from the route parameters using useLocalSearchParams
     const { email, otp } = useLocalSearchParams();
 
+    const isValidPassword = (password: string) => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>\/?]).{6,}$/;
+        return regex.test(password);
+      };
+      
     useEffect(() => {
         console.log("Retrieved email:", email);
         console.log("Retrieved OTP:", otp);
@@ -32,6 +37,15 @@ const ResetPassword = () => {
             Alert.alert('Error', 'Password must be at least 6 characters long.');
             return;
         }
+
+        if (!isValidPassword(password)) {
+            Alert.alert(
+              "Invalid Password",
+              "Password must be at least 6 characters long, contain at least one number, one letter, and one special character."
+            );
+            return;
+          }
+          
         console.log("Sending Data:", { email, otp, password, confirmPassword });
 
         try {

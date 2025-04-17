@@ -37,6 +37,14 @@ const ProfileScreen = () => {
     }
   };
 
+  const getInitials = (name: string) => {
+    const nameParts = name.split(" ");
+    const initials = nameParts
+      .map((part: string) => part.charAt(0).toUpperCase())
+      .join("");
+    return initials;
+  };
+
 
   return (
     <View style={styles.container}>
@@ -46,11 +54,17 @@ const ProfileScreen = () => {
         <>
 
           <View style={styles.banner}>
-            <Image source={require("../../assets/images/block.jpg")} style={styles.bannerImage} />
+            {/* <Image source={require("../../assets/images/block.jpg")} /> */}
           </View>
 
           <View style={styles.profileContainer}>
-            <Image source={require("../../assets/images/user.png")} style={styles.profileImage} />
+            {/* <Image source={require("../../assets/images/user.png")} style={styles.profileImage} /> */}
+            {/* Circle with initials */}
+            <View style={styles.profileImage}>
+              <Text style={styles.initials}>
+                {userProfile?.full_name ? getInitials(userProfile.full_name) : "NN"}
+              </Text>
+            </View>
             <Text style={styles.name}>{userProfile?.full_name || "Name: Loading..."}</Text>
 
             <Text style={styles.email}>{userProfile?.email || "Email: Loading..."}</Text>
@@ -107,63 +121,80 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#ffffff",
     alignItems: "center",
   },
   banner: {
-    width:'100%',
-    height: 220,
+    width: '100%',
+    height: 190,
     backgroundColor: "#2B4B40",
     justifyContent: "center",
     alignItems: "center",
-    borderBottomLeftRadius: 90,
-    borderBottomRightRadius: '5%',
-  },
-  bannerImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
+    // borderBottomLeftRadius: 35,
+    // borderBottomRightRadius: 35,
+    marginBottom: 30,
   },
   profileContainer: {
     alignItems: "center",
-    marginTop: -50,
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    marginTop: -110,
+    elevation: 5,
+    shadowColor: "#9E9E9E",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    width: "85%",
   },
   profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: "#2B4B40",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
     borderWidth: 3,
-    borderColor: "#fff",
+    borderColor: "#ffffff",
+    elevation: 3,
+  },
+  initials: {
+    fontSize: 40,
+    fontWeight: "bold",
+    color: "#E8F1EE",
   },
   name: {
     fontSize: 22,
-    fontWeight: "bold",
-    marginTop: 10,
+    fontWeight: "700",
+    marginTop: 5,
+    color: "#2B4B40",
   },
   email: {
-    fontSize: 16,
-    color: "gray",
+    fontSize: 15,
+    color: "#5f5f5f",
+    marginTop: 4,
   },
   dob: {
-    fontSize: 16,
-    color: "gray",
+    fontSize: 15,
+    color: "#5f5f5f",
+    marginTop: 2,
   },
   buttonContainer: {
-    marginTop: 30,
-    width: "100%",
-    alignItems: "center",
+    marginTop: 40,
+    width: "90%",
   },
   button: {
     flexDirection: "row",
     backgroundColor: "#2B4B40",
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 20,
-    borderRadius: 8,
-    marginVertical: 5,
-    width: "90%",
+    borderRadius: 20,
+    marginVertical: 10,
     alignItems: "center",
     justifyContent: "space-between",
-    // transition: "background-color 0.2s ease-in-out",
+    elevation: 2,
   },
   logoutButton: {
     backgroundColor: "#B22222",
@@ -171,8 +202,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
 });
+
 
 export default ProfileScreen;

@@ -32,6 +32,23 @@ const LoginScreen = () => {
   
   const handleLogin = async () => {
     console.log("Attempting login with:", { email, password });
+
+    if(!email && !password){
+      Alert.alert("Error", "Please enter your email and password.");
+      return;
+    }
+
+    if(!email){
+      Alert.alert("Error", "Please enter your email.");
+      return;
+    }
+
+    if(!password){
+      Alert.alert("Error", "Please enter your password.");
+    }
+
+
+
     try {
       const tokens = await authDisplayService.userLogin(email, password);
       if (tokens?.access && tokens?.refresh) {

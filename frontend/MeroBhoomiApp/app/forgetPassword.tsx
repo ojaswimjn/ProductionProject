@@ -15,6 +15,7 @@ const ForgetPassword = () => {
             return;
         }
 
+
         const result = await sendOTP(email);
         if (result.success) {
             Alert.alert('Success', result.data || 'Please check your email. OTP link has been sent sucessfully.');

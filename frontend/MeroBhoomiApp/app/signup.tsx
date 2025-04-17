@@ -56,16 +56,39 @@ export default function Signup() {
         return `${year}-${month}-${day}`;
     };
 
+    const isValidEmail = (email: string) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
+
+    const isValidPassword = (password: string) => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{6,}$/;
+        return regex.test(password);
+    };
+    
+
     const handleSignup = async () => {
         if (!form.email || !form.full_name || !form.date_of_birth || !form.password || !form.password2) {
             Alert.alert("Error", "All fields are required!");
             return;
         }
 
+        if (!isValidEmail(form.email)) {
+            Alert.alert("Error", "Please enter a valid email address!");
+            return;
+        }
+
+        if (!isValidPassword(form.password)) {
+            Alert.alert("Error", "Password must be at least 6 characters long with 1 number and 1 special character.");
+            return;
+        }
         if (form.password !== form.password2) {
             Alert.alert("Error", "Passwords do not match!");
             return;
         }
+
+        
+
 
         setLoading(true);
         try {

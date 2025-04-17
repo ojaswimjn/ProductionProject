@@ -106,7 +106,7 @@ const ScheduleWaste = () => {
         },
       });
 
-      Alert.alert("Success", "Your pickup has been scheduled!");
+      Alert.alert("Success", "Your pickup has been scheduled! You will receive points after the waste has been picked up.");
       // console.log("reached here")
       setIsSuccess(true); // trigger the form reset
 
@@ -207,72 +207,81 @@ const ScheduleWaste = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5", // Slightly light background for a cleaner look
-    paddingHorizontal: width * 0.05,
-    paddingVertical: height * 0.02,
+    backgroundColor: "#FAFAFA",
+    paddingHorizontal: 30,
+    paddingTop: 60,
   },
   header: {
-    fontSize: width * 0.08,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#2B4B40",
-    marginBottom: height * 0.05,
+    textAlign: "center",
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,
     fontWeight: "600",
-    alignSelf: "flex-start",
-    marginLeft: width * 0.1,
-    color: "#555", // Darker text color for better readability
-    marginTop: height * 0.02,
+    color: "#333",
+    marginTop: 20,
+    marginBottom: 6,
   },
   input: {
-    width: "80%",
-    padding: width * 0.05,
-    borderRadius: 16,
-    marginVertical: height * 0.015,
+    width: "100%",
+    padding: 14,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
-    fontSize: width * 0.04,
-    elevation: 3, // Slight shadow for input fields to make them pop
+    borderColor: "#CCC",
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   button: {
-    width: "80%",
+    width: "100%",
     backgroundColor: "#2B4B40",
-    paddingVertical: height * 0.016,
+    paddingVertical: 14,
     borderRadius: 30,
     alignItems: "center",
-    marginTop: height * 0.02,
-    elevation: 5, // Adds shadow effect to the buttons
+    marginTop: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   sendButton: {
-    width: "80%",
-    backgroundColor: "#2B4B40",
-    paddingVertical: height * 0.016,
+    width: "100%",
+    backgroundColor: "#1E3D34",
+    paddingVertical: 16,
     borderRadius: 30,
     alignItems: "center",
-    marginTop: height * 0.04,
-    elevation: 5,
+    marginTop: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 18,
+    color: "#FFFFFF",
+    fontSize: 16,
     fontWeight: "bold",
   },
   selectedDate: {
-    fontSize: width * 0.04,
-    marginTop: height * 0.01,
-    color: "#333",
+    fontSize: 15,
+    color: "#444",
+    marginTop: 10,
     textAlign: "center",
   },
   hintText: {
-    fontSize: 14,
-    color: "#777", // Light gray text color for hint
-    // marginTop: height * 0.01,
-    // textAlign: "center",
+    fontSize: 13,
+    color: "#888",
+    marginTop: 4,
   },
 });
+
 
 export default ScheduleWaste;

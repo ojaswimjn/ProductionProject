@@ -25,10 +25,24 @@ const ChangePassword = () => {
 
   const router = useRouter();
 
+  const isValidPassword = (password: string) => {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{6,}$/;
+    return regex.test(password);
+  };
+
+
   // Change Password Function
   const changePassword = async () => {
     if (newPassword !== confirmPassword) {
       Alert.alert("Error", "New password and confirmation do not match!");
+      return;
+    }
+
+    if (!isValidPassword(newPassword)) {
+      Alert.alert(
+        "Weak Password",
+        "Password must be at least 6 characters and include at least 1 letter, 1 number, and 1 special character."
+      );
       return;
     }
 
@@ -70,7 +84,7 @@ const ChangePassword = () => {
         setNewPassword("");
         setConfirmPassword("");
 
-        router.push('/profileScreen')
+        router.push('/login')
       } else {
         Alert.alert(
           "Error",
