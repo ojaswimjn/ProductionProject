@@ -314,6 +314,17 @@ class WasteItemViewSet(viewsets.ModelViewSet):
     queryset = WasteItem.objects.all()
     serializer_class = WasteItemSerializer
 
+    @action(detail=False, methods=['get'], url_path='user')
+    def get_by_user(self, request):
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id is required as a query parameter."}, status=400)
+        
+        items = WasteItem.objects.filter(image_id__user_id=user_id)
+        serializer = self.get_serializer(items, many=True)
+        return Response(serializer.data)
+
+    
 #PickUp Request ViewSet
 class PickupRequestViewSet(viewsets.ModelViewSet):
     queryset = PickupRequest.objects.all()

@@ -13,7 +13,7 @@ const getRewardsPoint = async () => {
       },
     });
 
-    console.log("rewards point here:",response.data);
+    console.log("rewards point heree:",response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching rewards data:", error);

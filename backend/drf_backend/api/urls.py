@@ -1,7 +1,7 @@
 from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView, WasteItemViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from api.views import SendTestNotification
@@ -11,6 +11,8 @@ router.register(r'wastecategory', WasteCategoryViewSet, basename='wastecategory'
 # router.register(r'manuscripts', ManuscriptViewSet.as_view(), name='manuscripts')
 router.register(r'pickuprequest', PickupRequestViewSet, basename='pickuprequest')
 router.register(r'reward', RewardViewSet, basename='reward')
+router.register(r'wasteitem', WasteItemViewSet, basename='wasteitem')
+
 
 
 
