@@ -62,11 +62,11 @@ export default function TrashPrediction() {
 
     let pointsToAdd = 0;
     if (accuracy_score > 0.9) {
-      pointsToAdd = 10;
+      pointsToAdd = 50;
     } else if (accuracy_score > 0.7 && accuracy_score < 0.9) {
-      pointsToAdd = 5;
+      pointsToAdd = 25;
     } else {
-      pointsToAdd = 0;
+      pointsToAdd = 5;
     }
 
     setIndPoints(pointsToAdd)
