@@ -7,6 +7,7 @@ import WelcomeDash from "@/components/home/WelcomeDash";
 import DataDashboard from "@/components/home/DataDashboard";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { registerForPushTokenAndSend } from "../usePushToken";
+import { Stack } from 'expo-router';
 
 export const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
@@ -37,20 +38,24 @@ const HomeScreen = () => {
   }, [accessToken]);
 
   return (
-    <View style={styles.container}>
-    {/* Fixed Header */}
-    <Header />
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
 
-    {/* Scrollable Content */}
-    <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-      <WelcomeDash />
-      <GridMenu />
-      <DataDashboard/>
-      <GridMenu />
-      <WelcomeDash />
+      <View style={styles.container}>
+      {/* Fixed Header */}
+      <Header />
 
-    </ScrollView>
-  </View>
+      {/* Scrollable Content */}
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <WelcomeDash />
+        <GridMenu />
+        <DataDashboard/>
+        <GridMenu />
+        <WelcomeDash />
+
+      </ScrollView>
+    </View>
+    </>
   );
 };
 

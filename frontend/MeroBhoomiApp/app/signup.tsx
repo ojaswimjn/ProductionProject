@@ -14,6 +14,8 @@ import {
 import { useRouter } from 'expo-router';
 import { setUserRegistration } from './services/userRegistrationService';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Stack } from 'expo-router';
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -105,83 +107,92 @@ export default function Signup() {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Create an account</Text>
-
-            <TextInput
-                style={styles.input}
-                placeholder="Full Name"
-                value={form.full_name}
-                onChangeText={(text) => handleInputChange('full_name', text)}
+        <>
+            <Stack.Screen 
+                options={{
+                headerShown: true, 
+                title: 'Sign Up', 
+                }} 
             />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={form.email}
-                onChangeText={(text) => handleInputChange('email', text)}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
+            <View style={styles.container}>
+                <Text style={styles.header}>Create an account</Text>
 
-            <Text style={styles.label}>Date of Birth</Text>
-            {showPicker && (
-                <DateTimePicker
-                    mode="date"
-                    display="spinner"
-                    value={date}
-                    onChange={onChange}
+                <TextInput
+                    style={styles.input}
+                    placeholder="Full Name"
+                    value={form.full_name}
+                    onChangeText={(text) => handleInputChange('full_name', text)}
                 />
-            )}
-            {!showPicker && (
-                <Pressable onPress={toggleDatePicker}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="YYYY-MM-DD"
-                        value={form.date_of_birth}
-                        editable={false}
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    value={form.email}
+                    onChangeText={(text) => handleInputChange('email', text)}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                />
+
+                <Text style={styles.label}>Date of Birth</Text>
+                {showPicker && (
+                    <DateTimePicker
+                        mode="date"
+                        display="spinner"
+                        value={date}
+                        onChange={onChange}
                     />
-                </Pressable>
-            )}
-
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={form.password}
-                onChangeText={(text) => handleInputChange("password", text)}
-                secureTextEntry
-            />
-
-            <TextInput
-                style={styles.input}
-                placeholder="Confirm Password"
-                value={form.password2}
-                onChangeText={(text) => handleInputChange("password2", text)}
-                secureTextEntry
-            />
-
-            <View style={styles.tcContainer}>
-                <TouchableOpacity
-                    onPress={() => setForm({ ...form, tc: !form.tc })}
-                    style={styles.checkbox}
-                >
-                    {form.tc && <Text style={styles.checkboxTick}>✔</Text>}
-                </TouchableOpacity>
-                <Text style={styles.tcText}>I agree to the Terms and Conditions</Text>
-            </View>
-
-            <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
-                {loading ? (
-                    <ActivityIndicator color="#fff" />
-                ) : (
-                    <Text style={styles.signupButtonText}>Sign Up</Text>
                 )}
-            </TouchableOpacity>
+                {!showPicker && (
+                    <Pressable onPress={toggleDatePicker}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="YYYY-MM-DD"
+                            value={form.date_of_birth}
+                            editable={false}
+                        />
+                    </Pressable>
+                )}
 
-            <TouchableOpacity style={styles.loginRedirect} onPress={() => router.push("/login")}>
-                <Text style={styles.loginText}>Already have an account? Login</Text>
-            </TouchableOpacity>
-        </View>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    value={form.password}
+                    onChangeText={(text) => handleInputChange("password", text)}
+                    secureTextEntry
+                />
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="Confirm Password"
+                    value={form.password2}
+                    onChangeText={(text) => handleInputChange("password2", text)}
+                    secureTextEntry
+                />
+
+                <View style={styles.tcContainer}>
+                    <TouchableOpacity
+                        onPress={() => setForm({ ...form, tc: !form.tc })}
+                        style={styles.checkbox}
+                    >
+                        {form.tc && <Text style={styles.checkboxTick}>✔</Text>}
+                    </TouchableOpacity>
+                    <Text style={styles.tcText}>I agree to the Terms and Conditions</Text>
+                </View>
+
+                <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={styles.signupButtonText}>Sign Up</Text>
+                    )}
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.loginRedirect} onPress={() => router.push("/login")}>
+                    <Text style={styles.loginText}>Already have an account? Login</Text>
+                </TouchableOpacity>
+            </View>
+        </>    
     );
 }
 

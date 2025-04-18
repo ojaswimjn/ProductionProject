@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -6,7 +7,7 @@ const Header = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>MeroBhoomi</Text>
-      <TouchableOpacity style={styles.iconContainer}>
+      <TouchableOpacity style={styles.iconContainer} onPress={()=> {router.push("/notificationPage") }}>
         <Icon name="bell" size={24} color="black" />
       </TouchableOpacity>
     </View>

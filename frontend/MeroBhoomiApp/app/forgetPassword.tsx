@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, Dimensions } from 'react-native';
 import { sendOTP } from './services/authForgetPassword';
 import { useRouter } from "expo-router";
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get("window");
 
@@ -30,27 +31,35 @@ const ForgetPassword = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Forgot Password</Text>
-            <Text style={styles.label}>Enter email address</Text>
-            <TextInput
-                style={styles.Textinput}
-                placeholder='Email'
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize='none'
+        <>
+            <Stack.Screen 
+                options={{
+                headerShown: true, 
+                title: 'Forgot Password', 
+                }} 
             />
-            <TouchableOpacity style={styles.sendButton} onPress={handleSendOTP}>
-                <Text style={styles.buttonText}>Send</Text>
-            </TouchableOpacity>
-            
-            <View style={styles.footerContainer}>
-                <Text style={styles.signinText}>Don't want to reset?</Text>
-                <TouchableOpacity onPress={() => router.push("./login")}>
-                    <Text style={styles.signinLink}>Sign in</Text>
+            <View style={styles.container}>
+                <Text style={styles.header}>Forgot Password</Text>
+                <Text style={styles.label}>Enter email address</Text>
+                <TextInput
+                    style={styles.Textinput}
+                    placeholder='Email'
+                    value={email}
+                    onChangeText={setEmail}
+                    autoCapitalize='none'
+                />
+                <TouchableOpacity style={styles.sendButton} onPress={handleSendOTP}>
+                    <Text style={styles.buttonText}>Send</Text>
                 </TouchableOpacity>
+                
+                <View style={styles.footerContainer}>
+                    <Text style={styles.signinText}>Don't want to reset?</Text>
+                    <TouchableOpacity onPress={() => router.push("./login")}>
+                        <Text style={styles.signinLink}>Sign in</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </>
     );
 };
 

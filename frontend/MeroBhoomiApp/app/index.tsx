@@ -8,7 +8,8 @@ import {
   } from "react-native";
   import React from "react";
   import { useRouter } from "expo-router";
-  
+  import { Stack } from 'expo-router';
+
   export default function SplashScreen() {
     const router = useRouter();
   
@@ -18,17 +19,18 @@ import {
     };
   
     return (
-      <TouchableWithoutFeedback onPress={handleNavigate} accessible={false}>
-        <View style={styles.container}>
-          {/* App Logo <Image source={require("../assets/logo.png")} style={styles.logo} />*/}
-          <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <TouchableWithoutFeedback onPress={handleNavigate} accessible={false}>
+          <View style={styles.container}>
+            {/* App Logo <Image source={require("../assets/logo.png")} style={styles.logo} />*/}
+            <Image source={require('../assets/images/logo.png')} style={styles.logo} />
 
-          {/* App Name */}
-          <Text style={styles.appName}>MeroBhoomi</Text>
-  
-          {/* <Text style={styles.slogan}>Learn, Speak, Belong.</Text> */}
-        </View>
-      </TouchableWithoutFeedback>
+            {/* App Name */}
+            <Text style={styles.appName}>MeroBhoomi</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </>
     );
   }
   
