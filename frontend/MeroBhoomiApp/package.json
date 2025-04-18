@@ -44,6 +44,7 @@
     "react-icons-kit": "^2.0.0",
     "react-native": "^0.76.9",
     "react-native-animatable": "^1.4.0",
+    "react-native-confetti-cannon": "^1.5.2",
     "react-native-date-picker": "^5.0.10",
     "react-native-datepicker": "^1.7.2",
     "react-native-geolocation-service": "^5.3.1",

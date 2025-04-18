@@ -6,11 +6,11 @@ import  { width, height } from '../../app/(tabs)/index'
 
 const menuItems = [
   { title: 'Schedule', icon: 'clock-outline', route: '/scheduleWaste' },
-  { title: 'Recycle', icon: 'recycle', route: '/app/(tabs)/scannerScreen.tsx' },
-  { title: 'Tips', icon: 'lightbulb-outline', route: '/app/tips.tsx' },
-  { title: 'Tips', icon: 'lightbulb-outline', route: '/locationMap' },
+  { title: 'Recycle', icon: 'recycle', route: '/scannerScreen' },
+  { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
+  { title: 'Recyclers', icon: 'lightbulb-outline', route: '/recyclerMap' },
   { title: 'Blog', icon: 'file-document-outline', route: '/blog' },
-  { title: 'Donate', icon: 'hand-heart-outline', route: '/donate' }
+  { title: 'Help', icon: 'hand-circle-outline', route: '/donate' }
 ];
 
 const GridMenu = () => {

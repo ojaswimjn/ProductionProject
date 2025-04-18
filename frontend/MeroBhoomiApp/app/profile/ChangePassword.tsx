@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  StyleSheet,
-  Text,
   View,
+  Text,
   TextInput,
-  Button,
+  TouchableOpacity,
   Alert,
+  StyleSheet,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASEURL } from "../authDisplayService";
-import { getUserProfile } from "../services/authDisplayProfile";
-import {  useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { Stack } from 'expo-router';
 
+
+const { width, height } = Dimensions.get("window");
 
 const ChangePassword = () => {
   const [editingPassword, setEditingPassword] = useState(false);
-
-  // Password state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -30,9 +32,12 @@ const ChangePassword = () => {
     return regex.test(password);
   };
 
-
-  // Change Password Function
   const changePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Alert.alert("Missing Fields", "Please fill in all password fields.");
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       Alert.alert("Error", "New password and confirmation do not match!");
       return;
@@ -59,11 +64,10 @@ const ChangePassword = () => {
       const requestData = {
         old_password: currentPassword,
         new_password: newPassword,
-        new_password2: confirmPassword, // Ensure these match API expectations
+        new_password2: confirmPassword,
       };
 
-      console.log("Sending request with data:", requestData); // Debugging
-
+      setLoading(true);
       const response = await axios.post(
         `${API_BASEURL}/user/changepassword/`,
         requestData,
@@ -75,86 +79,127 @@ const ChangePassword = () => {
         }
       );
 
-      console.log("Response:", response.data);
-
       if (response.status === 201) {
         Alert.alert("Success", "Password changed successfully!");
         setEditingPassword(false);
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
-
-        router.push('/login')
+        router.push("/login");
       } else {
-        Alert.alert(
-          "Error",
-          response.data?.message || "Failed to change password"
-        );
+        Alert.alert("Error", response.data?.message || "Failed to change password");
       }
     } catch (error) {
       console.error("Error changing password:", error);
       Alert.alert("Error", "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Change Password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Current Password"
-        secureTextEntry
-        value={currentPassword}
-        onChangeText={setCurrentPassword}
-      />
+    <>
+    <Stack.Screen options={{ headerShown: false }} />
 
-      <TextInput
-        style={styles.input}
-        placeholder="New Password"
-        secureTextEntry
-        value={newPassword}
-        onChangeText={setNewPassword}
-      />
+      <View style={styles.container}>
+        <Text style={styles.header}>Change Password</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm New Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Current Password"
+          secureTextEntry
+          value={currentPassword}
+          onChangeText={setCurrentPassword}
+        />
 
-      <Button title="Submit" onPress={changePassword} color="#2B4B40" />
-      <Button
-        title="Cancel"
-        onPress={() => setEditingPassword(false)}
-        color="#B22222"
-      />
-    </View>
+        <TextInput
+          style={styles.input}
+          placeholder="New Password"
+          secureTextEntry
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm New Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={changePassword}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.submitButtonText}>Submit</Text>
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => 
+            // setEditingPassword(false)
+            router.push("/profileScreen")
+
+          }
+          >
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
-    padding: 20,
     justifyContent: "center",
+    backgroundColor: "#ffffff",
+    paddingHorizontal: width * 0.08,
   },
-  title: {
-    fontSize: 24,
+  header: {
+    fontSize: width * 0.07,
     fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
     color: "#2B4B40",
+    textAlign: "center",
+    marginBottom: height * 0.05,
   },
   input: {
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 8,
+    width: "100%",
+    padding: width * 0.04,
+    borderRadius: 16,
+    marginVertical: height * 0.01,
     borderWidth: 1,
-    borderColor: "#ccc",
-    marginBottom: 10,
+    borderColor: "#E8F1EE",
+    backgroundColor: "#E8F1EE",
+    fontSize: width * 0.04,
+  },
+  submitButton: {
+    width: "100%",
+    backgroundColor: "#2B4B40",
+    padding: height * 0.016,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: height * 0.02,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  cancelButton: {
+    alignItems: "center",
+    marginTop: height * 0.03,
+  },
+  cancelButtonText: {
+    color: "#B22222",
+    fontSize: width * 0.04,
+    fontWeight: "600",
   },
 });
 

@@ -21,7 +21,8 @@ from django.http import QueryDict
 from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
-
+from django.db.models import Count, Sum
+from django.db.models import OuterRef, Subquery
 
 
 #generate token manually
@@ -324,6 +325,29 @@ class WasteItemViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(items, many=True)
         return Response(serializer.data)
 
+
+    @action(detail=False, methods=['get'], url_path='leaderboard')
+    def leaderboard(self, request):
+        reward_points_subquery = Reward.objects.filter(
+            user_id=OuterRef('image_id__user_id')
+        ).values('user_id').annotate(
+            total_points=Sum('points')
+        ).values('total_points')
+
+
+        leaderboard = WasteItem.objects.values('image_id__user_id').annotate(
+        total_items=Count('waste_item_id'),
+        total_points=Subquery(reward_points_subquery[:1])
+        ).order_by('-total_points')
+
+        return Response([
+        {
+            "user_id": entry["image_id__user_id"],
+            "total_items": entry["total_items"],
+            "total_points": entry["total_points"] or 0
+        }
+        for entry in leaderboard
+        ])
     
 #PickUp Request ViewSet
 class PickupRequestViewSet(viewsets.ModelViewSet):

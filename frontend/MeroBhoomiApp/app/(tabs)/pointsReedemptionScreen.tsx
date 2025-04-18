@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { Button, View, StyleSheet, Image, Text, ScrollView, Dimensions  } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
+import ConfettiCannon from 'react-native-confetti-cannon'; 
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASEURL } from "../authDisplayService";
@@ -10,11 +11,22 @@ import { getRewardsPoint } from "../services/getRewardsPointService";
 
 const { width, height } = Dimensions.get('window');
 
+interface LeaderboardEntry {
+  user_id: number;
+  total_items: number;
+  total_points: number;
+}
+
+
 const PointsAndReedemptionScreen = () => {
   const [totalWasteItems, setTotalWasteItem] = useState(0);
   const [rewardPoints, setRewardPoints] = useState(0);
 
   const [categoryCounts, setCategoryCounts] = useState<{ [key: number]: number }>({});
+
+  const [congratsMessage, setCongratsMessage] = useState('');
+
+
 
   const categories = [
     { id: 7, name: 'Paper', image: require('../../assets/images/staticPaper.jpg') },
@@ -48,6 +60,32 @@ const PointsAndReedemptionScreen = () => {
             return acc;
           }, {});
           setCategoryCounts(counts);
+
+
+          const leaderboardResponse = await fetch(`${API_BASEURL}/wasteitem/leaderboard/`);
+          const leaderboard: LeaderboardEntry[] = await leaderboardResponse.json();
+
+          if (leaderboard.length > 0) {
+            const topRecycler = leaderboard.reduce((prev, curr) => 
+              curr.total_items > prev.total_items ? curr : prev
+            );
+
+            const topPointsHolder = leaderboard.reduce((prev, curr) =>
+              curr.total_points > prev.total_points ? curr : prev
+            );
+
+            if (user_id === topRecycler.user_id && user_id === topPointsHolder.user_id) {
+              setCongratsMessage("Congratulations!🎉 You're leading the board in both recycling and reward points! Keep on recycling.");
+            } else if (user_id === topRecycler.user_id) {
+              setCongratsMessage("You're the top recycler! Keep up the great work!");
+            } else if (user_id === topPointsHolder.user_id) {
+              setCongratsMessage("You've earned the most reward points! Fantastic job!");
+            } else {
+              setCongratsMessage(""); // No message if not leading
+            }
+
+          }
+
         } catch (error) {
           console.error("Error fetching data: ", error);
         }
@@ -62,11 +100,34 @@ const PointsAndReedemptionScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>Your Recycling Summary</Text>
 
+      {congratsMessage !== '' && (
+        <>
+        <ConfettiCannon
+          count={100}
+          origin={{ x: width / 2, y: -20 }}
+          autoStart={true}
+          fallSpeed={3000}
+          explosionSpeed={500}
+          fadeOut={true}
+        />
+        <View style={styles.messageContainer}>
+          <Image
+            source={require('../../assets/images/trophy.png')}
+            style={styles.trophyImage}
+            resizeMode="contain"
+          ></Image>
+          <Text style={styles.messageText}>{congratsMessage}</Text>
+        </View>
+        </>
+      )}
+
       <View style={styles.summaryCard}>
         <Text style={styles.summaryTitle}>Total Recycled Items:</Text>
-        <Text style={styles.summaryValue}>{totalWasteItems}</Text>
+        <Text style={styles.summaryValue}>♻️ {totalWasteItems}</Text>
         <Text style={styles.summaryTitle}>Total Reward Points:</Text>
-        <Text style={styles.summaryValue}>{rewardPoints}</Text>
+        <Text style={styles.summaryValue}>🪙 {rewardPoints}</Text>
+
+        
       </View>
 
       <Text style={styles.subHeading}>Progress</Text>
@@ -98,6 +159,26 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#2B4B40',
     
+  },
+  trophyImage: {
+    width: 60,
+    height: 60,
+    alignSelf: 'center',
+    marginBottom: 10,
+  },
+  
+  messageContainer: {
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    elevation:2,
+  },
+  messageText: {
+    fontSize: 16,
+    color: '#2B4B40',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   subHeading: {
     fontSize: width * 0.05,

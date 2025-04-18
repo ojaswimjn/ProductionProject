@@ -86,16 +86,16 @@ const ProfileScreen = () => {
 
             <TouchableOpacity 
               style={styles.button} 
-              onPress={() => router.push('/profile/SavedAddress')}
+              onPress={() => router.push('/locationMap')}
             >
-              <Text style={styles.buttonText}>Saved Addresses</Text>
+              <Text style={styles.buttonText}>Your location</Text>
               <Ionicons name="chevron-forward" size={20} color="#ffffff" />
 
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.button} 
-              onPress={() => router.push('/profile/PointsAndReedemption')}
+              onPress={() => router.push('/pointsReedemptionScreen')}
             >
               <Text style={styles.buttonText}>Points & Redemption</Text>
               <Ionicons name="chevron-forward" size={20} color="#ffffff" />

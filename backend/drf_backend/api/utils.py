@@ -30,6 +30,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 model_path = "C:/project/ai/trained_model.h5"
+# model_path = "C:/project/ai/trained_modelseventypercent.keras"
+
 model = tf.keras.models.load_model(model_path)
 
 # Define the mapping between predicted indices and category IDs
