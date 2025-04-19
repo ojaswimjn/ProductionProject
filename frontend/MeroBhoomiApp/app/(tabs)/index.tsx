@@ -8,6 +8,7 @@ import DataDashboard from "@/components/home/DataDashboard";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { registerForPushTokenAndSend } from "../usePushToken";
 import { Stack } from 'expo-router';
+import RecyclableSliderGrid from "@/components/home/RecyclableGrid";
 
 export const { width, height } = Dimensions.get("window"); // Get the screen dimensions
 
@@ -50,8 +51,11 @@ const HomeScreen = () => {
         <WelcomeDash />
         <GridMenu />
         <DataDashboard/>
-        <GridMenu />
-        <WelcomeDash />
+        <RecyclableSliderGrid/>
+
+
+        {/* <GridMenu /> */}
+        {/* <WelcomeDash /> */}
 
       </ScrollView>
     </View>
@@ -67,9 +71,11 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    alignItems: "center",
+    alignItems: "stretch",
     paddingVertical: 20,
-    marginTop: 50, // Adjust this so content does not overlap with the fixed header
+    paddingHorizontal: 16, 
+
+    marginTop: 20, //changes herehere
   },
 })
 

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, Dimensions 
 import axios from 'axios';
 import { useRouter, useLocalSearchParams } from 'expo-router'; // Import useLocalSearchParams
 import { API_BASEURL } from "./authDisplayService";
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -53,31 +54,39 @@ const OTPVerification = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>OTP Verification</Text>
-            <Text style={styles.label}>Enter OTP</Text>
-            
-            <TextInput
-                style={styles.otpInput}
-                placeholder="_ _ _ _ _ _"
-                value={otp}
-                onChangeText={setOtp}
-                keyboardType="numeric"
-                maxLength={6}
-                textAlign="center"
+        <>
+            <Stack.Screen 
+                options={{
+                headerShown: true, 
+                title: 'Verification', 
+                }} 
             />
-            
-            <TouchableOpacity style={styles.verifyButton} onPress={handleVerifyOTP}>
-                <Text style={styles.buttonText}>Verify</Text>
-            </TouchableOpacity>
-
-            <View style={styles.footerContainer}>
-                <Text style={styles.signinText}>Didn't receive OTP?</Text>
-                <TouchableOpacity onPress={() => router.push('/forgetPassword')}>
-                    <Text style={styles.signinLink}>Resend</Text>
+            <View style={styles.container}>
+                <Text style={styles.header}>OTP Verification</Text>
+                <Text style={styles.label}>Enter OTP</Text>
+                
+                <TextInput
+                    style={styles.otpInput}
+                    placeholder="_ _ _ _ _ _"
+                    value={otp}
+                    onChangeText={setOtp}
+                    keyboardType="numeric"
+                    maxLength={6}
+                    textAlign="center"
+                />
+                
+                <TouchableOpacity style={styles.verifyButton} onPress={handleVerifyOTP}>
+                    <Text style={styles.buttonText}>Verify</Text>
                 </TouchableOpacity>
+
+                <View style={styles.footerContainer}>
+                    <Text style={styles.signinText}>Didn't receive OTP?</Text>
+                    <TouchableOpacity onPress={() => router.push('/forgetPassword')}>
+                        <Text style={styles.signinLink}>Resend</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+         </>   
     );
 };
 

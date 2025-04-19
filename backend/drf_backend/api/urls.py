@@ -1,7 +1,7 @@
 from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView, WasteItemViewSet
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView, WasteItemViewSet, ScheduledWasteSummaryView
 from django.conf import settings
 from django.conf.urls.static import static
 from api.views import SendTestNotification
@@ -35,6 +35,9 @@ urlpatterns = [
 
     path('save-token/', SaveExpoTokenView.as_view()),
     path('send-test-push/', SendTestNotification.as_view(), name='send_test_push'),
+
+    path('scheduled-waste-summary/', ScheduledWasteSummaryView.as_view(), name='scheduled-waste-summary'),
+
 
 
 

@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ImageBackground,ActivityIndicator, Alert,   Dimensions,
 } from "react-native";
 import { getUserProfile } from "../../app/services/authDisplayProfile" 
+import { getRewardsPoint } from '@/app/services/getRewardsPointService';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from "react";
+
 
 // Define the UserProfile interface
 interface UserProfile {
@@ -17,7 +21,29 @@ export const { width, height } = Dimensions.get("window"); // Get the screen dim
 const WelcomeDash = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null); // State typed as UserProfile or null
   const [loading, setLoading] = useState(true);  // To handle loading state
+  const [rewardPoints, setRewardPoints] = useState(0);
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUserReward = async ( ) => {
+        try {
+          const userReward = await getRewardsPoint();
+          const rewardPoints = userReward.reduce((total: number, reward: any) => {
+            return total + (reward.points || 0);
+            }, 0);
+  
+            setRewardPoints(rewardPoints);
+          }catch(error){
+            console.error("Error fetching data in reward welcome dash: ", error);
+          }
+      }
+
+      fetchUserReward();
+
+
+    }
+    , [])
+  )
   useEffect(() => {
     // Fetch user profile once the component mounts
     const fetchUserProfile = async () => {
@@ -30,6 +56,8 @@ const WelcomeDash = () => {
         Alert.alert("Error", "Failed to fetch user profile.");
       }
     };
+
+    
 
     fetchUserProfile();  // Call the function to fetch the profile
   }, []);
@@ -56,9 +84,10 @@ const WelcomeDash = () => {
     <View style={styles.container}>
       <ImageBackground source={require("../../assets/images/profile-bg.png")} style={styles.profileBox}>
         <Text style={styles.title}>Welcome {userProfile.full_name}!</Text>
-        <Text style={styles.profileText}>Email: {userProfile.email}</Text>
-        <Text style={styles.profileText}>Role: {userProfile.user_role}</Text>
-        <Text style={styles.profileText}>Status: {userProfile.is_active ? "Active" : "Inactive"}</Text>
+        <Text style={styles.profileText}> Email: {userProfile.email}</Text>
+        <Text style={styles.profileText}> Status: {userProfile.is_active ? "Active" : "Inactive"}</Text>
+        <Text style={styles.profileText}> Collected Points: {rewardPoints}</Text>
+
         </ImageBackground>
     </View>
   );
@@ -69,8 +98,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    padding: '2%',
-    marginBottom: -60
+    // marginTop: '5%',
+    marginBottom: '-2%'
 
     // backgroundColor: "#ffffff",
   },

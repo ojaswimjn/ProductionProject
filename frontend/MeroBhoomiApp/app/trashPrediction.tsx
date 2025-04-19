@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getRewardsPoint } from "./services/getRewardsPointService";
 import Modal from "react-native-modal";
 import { AntDesign } from "@expo/vector-icons";
+import { Stack } from 'expo-router';
 
 
 interface RecyclingTip {
@@ -96,138 +97,146 @@ export default function TrashPrediction() {
   };
 
   return (
-    <View style={styles.scrollContainer}>
-      <View style={styles.mainContainer}>
-        <Text style={styles.title}>Your Trash Prediction</Text>
+    <>
+      <Stack.Screen 
+                options={{
+                headerShown: true, 
+                title: 'Trash Prediction', 
+                }} 
+            />
+      <View style={styles.scrollContainer}>
+        <View style={styles.mainContainer}>
+          <Text style={styles.title}>Your Trash Prediction</Text>
 
-        {parsedResponse && (
-          <View style={styles.predictionContainer}>
+          {parsedResponse && (
+            <View style={styles.predictionContainer}>
+              <Image
+                source={{ uri: `${API_BASEURL}${parsedResponse.image_url}` }}
+                style={styles.image}
+                resizeMode="contain"
+              />
+              <View style={styles.predictionDetails}>
+                <Text style={styles.categoryText}>
+                  {capitalizeFirstLetter(parsedResponse.category_name)}
+                </Text>
+                <Text style={styles.predictionText}>
+                Accuracy: {parsedResponse.accuracy_score.toFixed(3)}
+                </Text>
+                
+                <Text style={styles.recyclingNote}>
+                  Recycling this type of item helps reduce waste and conserve
+                  resources.
+                </Text>
+              </View>
+            </View>
+          )}
+
+          <Text style={styles.pointsEarned}>Points Earned </Text>
+
+          <View style={styles.pointsContainer}>
+            <View style={styles.pointsLeft}>
+              <Text style={styles.earnedText}>{indPoints} points</Text>
+              <Text style={styles.totalText}>Total: {points}</Text>
+              <Text style={styles.coinInfo}>
+                For each recycled item, you get a different amount of coins based on the accuracy. To get higher points upload best angled single image and recycle it.
+              </Text>
+            </View>
             <Image
-              source={{ uri: `${API_BASEURL}${parsedResponse.image_url}` }}
-              style={styles.image}
+              source={require("../assets/images/coins.webp")} // replace with your image path
+              style={styles.coinImage}
               resizeMode="contain"
             />
-            <View style={styles.predictionDetails}>
-              <Text style={styles.categoryText}>
-                {capitalizeFirstLetter(parsedResponse.category_name)}
-              </Text>
-              <Text style={styles.predictionText}>
-              Accuracy: {parsedResponse.accuracy_score.toFixed(3)}
-              </Text>
-              
-              <Text style={styles.recyclingNote}>
-                Recycling this type of item helps reduce waste and conserve
-                resources.
-              </Text>
-            </View>
           </View>
-        )}
 
-        <Text style={styles.pointsEarned}>Points Earned </Text>
 
-        <View style={styles.pointsContainer}>
-          <View style={styles.pointsLeft}>
-            <Text style={styles.earnedText}>{indPoints} points</Text>
-            <Text style={styles.totalText}>Total: {points}</Text>
-            <Text style={styles.coinInfo}>
-              For each recycled item, you get a different amount of coins based on the accuracy. To get higher points upload best angled single image and recycle it.
+          {/* <View style={styles.tipContainer}>
+            <Text style={styles.tipHeader}>♻️ Recycling Tip</Text>
+            <Text style={styles.tipText}>
+              Always rinse recyclable containers to avoid contamination. Sorting
+              clean materials increases recycling efficiency!
             </Text>
-          </View>
-          <Image
-            source={require("../assets/images/coins.webp")} // replace with your image path
-            style={styles.coinImage}
-            resizeMode="contain"
-          />
+          </View> */}
         </View>
-
-
-        {/* <View style={styles.tipContainer}>
-          <Text style={styles.tipHeader}>♻️ Recycling Tip</Text>
-          <Text style={styles.tipText}>
-            Always rinse recyclable containers to avoid contamination. Sorting
-            clean materials increases recycling efficiency!
-          </Text>
-        </View> */}
-      </View>
-          <View style={styles.recyclingTipTrigger}>
-            <TouchableOpacity onPress={toggleTipModal} style={styles.tipHeaderRow}>
-              <Text style={styles.tipHeaderText}>Tips on recycling:</Text>
-              <AntDesign name="up" size={20} color="#ffff" />
-            </TouchableOpacity>
-            <Text style={styles.categoryNameText}>
-                  {capitalizeFirstLetter(parsedResponse.category_name)}
-            </Text>
-            <Text style={styles.categoryHashText}>
-              #1
-            </Text>
-
-
-
-            {recyclingTips.length > 0 ? (
-              <>
-                {recyclingTips.slice(0, 2).map((tip, index) => {
-                  const limitedText =
-                    tip.description.length > 100
-                      ? `${tip.description.substring(0, 105)}...`
-                      : tip.description;
-
-                  return (
-                    <Text key={index} style={[styles.modalTipText, styles.previewTip]}>
-                      {limitedText}
-                    </Text>
-                  );
-                })}
-              </>
-            ) : (
-              <Text style={[styles.modalTipText, styles.previewTip]}>
-                Loading recycling tips...
+            <View style={styles.recyclingTipTrigger}>
+              <TouchableOpacity onPress={toggleTipModal} style={styles.tipHeaderRow}>
+                <Text style={styles.tipHeaderText}>Tips on recycling:</Text>
+                <AntDesign name="up" size={20} color="#ffff" />
+              </TouchableOpacity>
+              <Text style={styles.categoryNameText}>
+                    {capitalizeFirstLetter(parsedResponse.category_name)}
               </Text>
-            )}
+              <Text style={styles.categoryHashText}>
+                #1
+              </Text>
 
-            
-          </View>
 
 
-        <Modal
-          isVisible={isTipModalVisible}
-          onBackdropPress={toggleTipModal}
-          style={styles.bottomModal}
-          backdropOpacity={0.3}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Recycling Tips</Text>
-              <TouchableOpacity onPress={toggleTipModal}>
-                <AntDesign name="close" size={24} color="#fff" />
+              {recyclingTips.length > 0 ? (
+                <>
+                  {recyclingTips.slice(0, 2).map((tip, index) => {
+                    const limitedText =
+                      tip.description.length > 100
+                        ? `${tip.description.substring(0, 105)}...`
+                        : tip.description;
+
+                    return (
+                      <Text key={index} style={[styles.modalTipText, styles.previewTip]}>
+                        {limitedText}
+                      </Text>
+                    );
+                  })}
+                </>
+              ) : (
+                <Text style={[styles.modalTipText, styles.previewTip]}>
+                  Loading recycling tips...
+                </Text>
+              )}
+
+              
+            </View>
+
+
+          <Modal
+            isVisible={isTipModalVisible}
+            onBackdropPress={toggleTipModal}
+            style={styles.bottomModal}
+            backdropOpacity={0.3}
+          >
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Recycling Tips</Text>
+                <TouchableOpacity onPress={toggleTipModal}>
+                  <AntDesign name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView style={styles.modalScroll}>     
+                <Text style={styles.modalTipText}>
+                {recyclingTips.length > 0 ? (
+                  recyclingTips.map((tip, index) => (
+                    <Text key={index} style={styles.modalTipItem}>
+                      <View key={index} style={styles.tipItem}>
+                        <Text style={styles.tipBullet}>•</Text>
+                        <Text style={styles.modalTipText}>{tip.description}</Text>
+                      </View>
+                    </Text>
+                  ))
+                ) : (
+                  <Text style={styles.modalTipText}>Loading recycling tips...</Text>
+                )}
+                </Text>
+              </ScrollView>
+
+              <TouchableOpacity style={styles.confirmBtnModal} onPress={toggleTipModal}>
+                <Text style={styles.confirmText}>Confirm</Text>
               </TouchableOpacity>
             </View>
-
-            <ScrollView style={styles.modalScroll}>     
-              <Text style={styles.modalTipText}>
-              {recyclingTips.length > 0 ? (
-                recyclingTips.map((tip, index) => (
-                  <Text key={index} style={styles.modalTipItem}>
-                    <View key={index} style={styles.tipItem}>
-                      <Text style={styles.tipBullet}>•</Text>
-                      <Text style={styles.modalTipText}>{tip.description}</Text>
-                    </View>
-                  </Text>
-                ))
-              ) : (
-                <Text style={styles.modalTipText}>Loading recycling tips...</Text>
-              )}
-              </Text>
-            </ScrollView>
-
-            <TouchableOpacity style={styles.confirmBtnModal} onPress={toggleTipModal}>
-              <Text style={styles.confirmText}>Confirm</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+          </Modal>
 
 
-      
-    </View>
+        
+        </View>
+      </>
   );
 
 
@@ -338,6 +347,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
     marginBottom: 30,
+
   },
   tipHeader: {
     fontSize: 16,

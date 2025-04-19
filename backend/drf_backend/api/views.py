@@ -23,6 +23,9 @@ from rest_framework.decorators import action
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Count, Sum
 from django.db.models import OuterRef, Subquery
+from rest_framework.permissions import IsAdminUser
+from django.utils.dateformat import DateFormat
+
 
 
 #generate token manually
@@ -474,3 +477,23 @@ class SendTestNotification(APIView):
             return Response({"message": "No push token found for user."}, status=404)
         return Response({"message": "Push sent!", "expo_response": result})
 
+class ScheduledWasteSummaryView(APIView):
+    permission_classes = [IsAdminUser]  
+
+    def get(self, request):
+        data = (
+            PickupRequest.objects
+            .values('request_date')
+            .annotate(total_weight=Sum('weight'))
+            .order_by('request_date')
+        )
+
+        formatted_data = [
+            {
+                "date": DateFormat(item['request_date']).format('Y-m-d'),
+                "total_weight": item['total_weight']
+            }
+            for item in data
+        ]
+
+        return Response(formatted_data, status=status.HTTP_200_OK)

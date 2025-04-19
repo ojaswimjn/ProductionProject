@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions 
 import axios from 'axios';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { API_BASEURL } from "./authDisplayService";
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -75,28 +76,36 @@ const ResetPassword = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Reset Password</Text>
-            <Text style={styles.label}>New Password</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter new password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
+        <>
+            <Stack.Screen 
+                options={{
+                headerShown: true, 
+                title: 'Reset Password', 
+                }} 
             />
-            <Text style={styles.label}>Confirm Password</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Confirm new password"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-            />
-            <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
-                <Text style={styles.buttonText}>Reset Password</Text>
-            </TouchableOpacity>
-        </View>
+            <View style={styles.container}>
+                <Text style={styles.header}>Reset Password</Text>
+                <Text style={styles.label}>New Password</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter new password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <Text style={styles.label}>Confirm Password</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Confirm new password"
+                    secureTextEntry
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                />
+                <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
+                    <Text style={styles.buttonText}>Reset Password</Text>
+                </TouchableOpacity>
+            </View>
+        </>    
     );
 };
 
@@ -128,7 +137,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E8F1EE',
         backgroundColor: '#E8F1EE',
-        fontSize: width * 0.05,
+        fontSize: 16,
         marginBottom: height * 0.02,
     },
     resetButton: {

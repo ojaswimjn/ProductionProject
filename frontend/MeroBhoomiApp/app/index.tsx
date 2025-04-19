@@ -45,7 +45,7 @@ import {
       width: '75%',
       height: '18%',
       marginBottom: 20,
-      marginTop: -70
+      marginTop: -30
     },
     appName: {
       fontSize: 30,

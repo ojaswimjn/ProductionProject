@@ -1,20 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
 import  { width, height } from '../../app/(tabs)/index'
+import { getUserProfile } from '@/app/services/authDisplayProfile';
 
-const menuItems = [
-  { title: 'Schedule', icon: 'clock-outline', route: '/scheduleWaste' },
-  { title: 'Recycle', icon: 'recycle', route: '/scannerScreen' },
-  { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
-  { title: 'Recyclers', icon: 'lightbulb-outline', route: '/recyclerMap' },
-  { title: 'Blog', icon: 'file-document-outline', route: '/blog' },
-  { title: 'Help', icon: 'hand-circle-outline', route: '/donate' }
-];
+
 
 const GridMenu = () => {
   const router = useRouter();
+  const [isAdmin, setIsAdmin]= useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUserProfile();
+        console.log("userDataaaaaaa", userData);
+
+        if (userData.user_role === 'admin') {
+          console.log("Admin role detected");
+          setIsAdmin(true);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile", error);
+      }
+    };
+
+    fetchUser();
+  }, []); 
+
+  const menuItems = [
+    { title: 'Schedule', icon: 'clock-outline', route: '/scheduleWaste' },
+    { title: 'Recycle', icon: 'recycle', route: '/scannerScreen' },
+    { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
+    { title: 'Recyclers', icon: 'lightbulb-outline', route: '/recyclerMap' },
+    ...(isAdmin
+      ? [{ title: 'Analytics', icon: 'chart-line', route: '/adminAnalytics' }]
+      : [{ title: 'Blog', icon: 'file-document-outline', route: '/blog' }]),
+    { title: 'Help', icon: 'hand-circle-outline', route: '/donate' }
+  ];
 
   return (
     <View style={styles.container}>
@@ -39,9 +63,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     // backgroundColor: '#E8F6EF',
-    width: '93%',
+    width: '100%',
     alignSelf: 'center',
-    paddingTop: '12%',
+    marginTop: '1%',
+    paddingBottom: '1%'
    
   },
   button: {
@@ -52,11 +77,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 4,
+    elevation: 3,
   },
   text: {
     marginTop: 8,
