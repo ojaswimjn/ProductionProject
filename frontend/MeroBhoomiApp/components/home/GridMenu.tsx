@@ -36,7 +36,7 @@ const GridMenu = () => {
     { title: 'Recyclers', icon: 'lightbulb-outline', route: '/recyclerMap' },
     ...(isAdmin
       ? [{ title: 'Analytics', icon: 'chart-line', route: '/adminAnalytics' }]
-      : [{ title: 'Blog', icon: 'file-document-outline', route: '/blog' }]),
+      : [{ title: 'Analytics', icon: 'chart-line', route: '/customerAnalytics' }]),
     { title: 'Help', icon: 'hand-circle-outline', route: '/donate' }
   ];
 

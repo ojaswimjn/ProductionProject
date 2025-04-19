@@ -47,9 +47,12 @@ const AdminAnalytics = () => {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      const filtered: WasteDataItem[] = res.data.filter((item: WasteDataItem) =>
+      const allData: WasteDataItem[] = res.data;
+
+        // For the selected month (used in line chart)
+        const filtered = allData.filter((item: WasteDataItem) =>
         dayjs(item.date).isSame(month, 'month')
-      );
+        );
 
       const labels = filtered.map((item: WasteDataItem) => dayjs(item.date).format('DD'));
       const data = filtered.map((item: WasteDataItem) => item.total_weight);
@@ -77,12 +80,12 @@ const AdminAnalytics = () => {
       });
 
       const monthsOfYear = Array.from({ length: 12 }, (_, i) => dayjs().month(i).format('MMM'));
-      const monthlyData = monthsOfYear.map(month => {
-        const totalWeightForMonth = filtered
-          .filter(item => dayjs(item.date).format('MMM') === month)
-          .reduce((acc, item) => acc + item.total_weight, 0);
-        return totalWeightForMonth;
-      });
+      const monthlyData = monthsOfYear.map((monthLabel, index) => {
+  const totalWeightForMonth = allData
+    .filter(item => dayjs(item.date).month() === index)
+    .reduce((acc, item) => acc + item.total_weight, 0);
+  return parseFloat(totalWeightForMonth.toFixed(2));
+});
 
       setBarChartData({
         labels: monthsOfYear,
@@ -141,7 +144,9 @@ const AdminAnalytics = () => {
                 </View>
             </View>
 
-            <Text style={styles.sectionHeading}>Daily Waste (kg)</Text>
+            <Text style={styles.sectionHeading}> Scheduled Waste (kg)</Text>
+            {/* <Text > (waste collected in a day )</Text> */}
+
             <LineChart
                 data={chartData}
                 width={screenWidth - 20}
@@ -152,15 +157,18 @@ const AdminAnalytics = () => {
             />
 
             <Text style={styles.sectionHeading}>Monthly Summary (kg)</Text>
-            <BarChart
-                data={barChartData}
-                width={screenWidth - 35}
-                height={220}
-                chartConfig={chartConfig}
-                yAxisLabel=""
-                yAxisSuffix="kg"
-                style={styles.charts}
-            />
+            
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <BarChart
+                    data={barChartData}
+                    width={screenWidth * 1.5} // or adjust to 1000 if needed
+                    height={220}
+                    chartConfig={chartConfig}
+                    yAxisLabel=""
+                    yAxisSuffix="kg"
+                    style={styles.charts}
+                />
+                </ScrollView>
             </>
         ) : (
             <Text style={styles.noData}>No data available for this month.</Text>
@@ -176,11 +184,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 16,
+    paddingHorizontal: 25,
     paddingTop: 20,
   },
   heading: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
     color: '#2B4B40',
     textAlign: 'center',
@@ -240,7 +248,7 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     marginTop: 20,
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '600',
     color: '#2B4B40',
     marginBottom: 6,

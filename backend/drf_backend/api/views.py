@@ -358,6 +358,15 @@ class PickupRequestViewSet(viewsets.ModelViewSet):
     serializer_class = PickUpRequestSerializer
     permission_classes = [IsAuthenticated]  
 
+    @action(detail=False, methods=['get'], url_path='user/(?P<user_id>[^/.]+)')
+    def by_user(self, request, user_id=None):
+        if not request.user.is_staff and request.user.id != int(user_id):
+            return Response({"detail": "Not authorized."}, status=403)
+
+        requests = PickupRequest.objects.filter(user_id=user_id)
+        serializer = self.get_serializer(requests, many=True)
+        return Response(serializer.data)
+
 class AvailableDateView(APIView):
     def is_date_fully_booked(self, pickup_date):
         """Check if a date is fully booked based on weight or request limit"""

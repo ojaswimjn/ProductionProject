@@ -41,6 +41,12 @@ const DataDashboard = () => {
         }, {});
         setCategoryCounts(counts);
 
+        if (data.length === 0) {
+          setRecycledDaysCount('activity not found');
+          return;
+        }
+        
+
         const latestDate: Date = data.reduce((latest: Date, item: any) => {
           const current = new Date(item.identified_date);
           return current > latest ? current : latest;
