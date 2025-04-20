@@ -506,3 +506,35 @@ class ScheduledWasteSummaryView(APIView):
         ]
 
         return Response(formatted_data, status=status.HTTP_200_OK)
+
+class MarkPickupCompletedView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, pk):
+        try:
+            pickup = PickupRequest.objects.get(pk=pk)
+        except PickupRequest.DoesNotExist:
+            return Response({'error': 'Pickup request not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if pickup.request_status != "Picked up":
+            pickup.request_status = "Picked up"
+            pickup.save()
+
+            # Calculate points
+            points = int(pickup.weight) * 10
+
+            try:
+                reward = Reward.objects.get(user_id=pickup.user_id)
+                reward.points += points
+                reward.description = f"Points updated for pickup completed on {pickup.request_date}"
+                reward.reward_status = "Completed"
+                reward.updated_date = timezone.now().date()
+                reward.save()
+            except Reward.DoesNotExist:
+                return Response({"error": "Reward record does not exist for this user"}, status=status.HTTP_404_NOT_FOUND)
+            except Reward.MultipleObjectsReturned:
+                return Response({"error": "Multiple reward entries found for this user. Cannot update reliably."}, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'message': f'Marked as picked up and {points} points added.'})
+
+        return Response({'message': 'Already picked up.'})

@@ -37,7 +37,10 @@ const GridMenu = () => {
     ...(isAdmin
       ? [{ title: 'Analytics', icon: 'chart-line', route: '/adminAnalytics' }]
       : [{ title: 'Analytics', icon: 'chart-line', route: '/customerAnalytics' }]),
-    { title: 'Help', icon: 'hand-circle-outline', route: '/donate' }
+      ...(isAdmin
+        ? [{ title: 'PickUp ', icon: 'chart-line', route: '/adminPickupStatusUpdate' }]
+        : [{ title: 'Help', icon: 'hand-circle-outline', route: '/help' }]),
+    // { title: 'Help', icon: 'hand-circle-outline', route: '/donate' }
   ];
 
   return (

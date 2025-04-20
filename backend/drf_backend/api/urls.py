@@ -1,7 +1,7 @@
 from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView, WasteItemViewSet, ScheduledWasteSummaryView
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView, WasteItemViewSet, ScheduledWasteSummaryView, MarkPickupCompletedView
 from django.conf import settings
 from django.conf.urls.static import static
 from api.views import SendTestNotification
@@ -37,6 +37,8 @@ urlpatterns = [
     path('send-test-push/', SendTestNotification.as_view(), name='send_test_push'),
 
     path('scheduled-waste-summary/', ScheduledWasteSummaryView.as_view(), name='scheduled-waste-summary'),
+    path('pickuprequest/<int:pk>/complete/', MarkPickupCompletedView.as_view(), name='mark-pickup-completed'),
+
 
 
 

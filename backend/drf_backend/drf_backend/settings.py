@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     "192.168.10.68",  # Your local network IP (if testing on a real device)
     "192.168.10.77",
     "172.22.16.40",
-    "172.22.16.246", 
+    "172.22.16.221", 
 ]
 
 # Application definition
@@ -207,7 +207,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.10.68:8081",  # Your Expo development server
         "http://127.0.0.1:8081",
     "http://localhost:8081", 
-    "http://172.22.16.246:8080" 
+    "http://172.22.16.221:8080" 
 
 
 

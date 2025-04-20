@@ -51,6 +51,8 @@ const ScheduleWaste = () => {
   const fetchAvailableDates = async () => {
     try {
       const response = await axios.get(`${API_BASEURL}/availabledates/`);
+      console.log("Available dates from server:", response.data.available_dates); // Add this to debug
+
       setAvailableDates(response.data.available_dates);
     } catch (error) {
       console.error("Error fetching available dates:", error);
@@ -68,6 +70,8 @@ const ScheduleWaste = () => {
 
   const handleConfirm = (date: Date) => {
     const formattedDate = date.toISOString().split("T")[0];
+    console.log("Selected Date:", formattedDate); // Add this to debug
+
     if (availableDates.includes(formattedDate)) {
       setSelectedDate(formattedDate);
     } else {
