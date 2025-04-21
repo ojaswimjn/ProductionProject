@@ -20,7 +20,7 @@ export async function registerForPushTokenAndSend(jwtToken) {
   console.log(token)
 
   // 👇 Send token to Django
-  await fetch('http:// 172.22.16.221:8000/api/save-token/', {
+  await fetch('http://192.168.10.68:8000/api/save-token/', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${jwtToken}`,
