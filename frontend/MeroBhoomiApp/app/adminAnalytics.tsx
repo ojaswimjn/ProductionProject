@@ -147,14 +147,17 @@ const AdminAnalytics = () => {
             <Text style={styles.sectionHeading}> Scheduled Waste (kg)</Text>
             {/* <Text > (waste collected in a day )</Text> */}
 
-            <LineChart
-                data={chartData}
-                width={screenWidth - 20}
-                height={220}
-                chartConfig={chartConfig}
-                bezier
-                style={styles.chart}
-            />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <LineChart
+                  data={chartData}
+                  width={screenWidth - 20}
+                  height={220}
+                  chartConfig={chartConfig}
+                  bezier
+                  style={styles.chart}
+              />
+            </ScrollView>
+            
 
             <Text style={styles.sectionHeading}>Monthly Summary (kg)</Text>
             

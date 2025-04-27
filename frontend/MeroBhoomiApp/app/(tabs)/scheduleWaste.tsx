@@ -39,7 +39,7 @@ const ScheduleWaste = () => {
       setLongitude(parseFloat(params.longitude as string));
     }
     if (params.selectedDate) setSelectedDate(params.selectedDate as string);
-    if (params.weight) setWeight(params.weight as string);
+    if (params.weight && !weight) setWeight(params.weight as string);
     if (params.wasteType) setWasteType(params.wasteType as string)
   }, [params]);
 
@@ -86,6 +86,17 @@ const ScheduleWaste = () => {
       return;
     }
 
+    const numericWeight = parseFloat(weight);
+
+  if (isNaN(numericWeight)) {
+    Alert.alert("Error", "Weight must be a valid number");
+    return;
+  }
+  if (numericWeight <= 0 || numericWeight >= 100) {
+    Alert.alert("Error", "Weight must be between 0 and 100 kg");
+    return;
+  }
+
     const accessToken = await AsyncStorage.getItem("accessToken");
     if (!accessToken) {
       Alert.alert("Error", "User not authenticated");
@@ -96,7 +107,7 @@ const ScheduleWaste = () => {
       request_date: selectedDate,
       request_status: "Pending",
       weight: weight,
-      waste_type: wasteType, // ← use the state here
+      waste_type: wasteType, 
       latitude: latitude,
       longitude: longitude,
       user_id: userId,
@@ -138,7 +149,7 @@ const ScheduleWaste = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Schedule Waste Pickup</Text>
+      <Text style={styles.header}>Schedule Organic Waste Pickup</Text>
 
       <Text style={styles.label}>Select a Pickup Date</Text>
       <TouchableOpacity style={styles.button} onPress={showDatePicker}>

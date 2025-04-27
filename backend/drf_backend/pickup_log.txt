@@ -6,3 +6,7 @@ WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be 
 Running Crons
 ========================================
 [ ] api.pickup_day_reminder
+WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+Running Crons
+========================================
+[ ] api.pickup_day_reminder

@@ -1,6 +1,7 @@
 // hooks/usePushToken.js
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import { API_BASEURL } from './authDisplayService';
 
 export async function registerForPushTokenAndSend(jwtToken) {
   console.log("🔔 registerForPushTokenAndSend called",jwtToken);
@@ -20,7 +21,7 @@ export async function registerForPushTokenAndSend(jwtToken) {
   console.log(token)
 
   // 👇 Send token to Django
-  await fetch('http://192.168.10.68:8000/api/save-token/', {
+  await fetch(`${API_BASEURL}/save-token/`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${jwtToken}`,
