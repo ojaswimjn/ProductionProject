@@ -32,7 +32,9 @@ const GridMenu = () => {
   const menuItems = [
     { title: 'Schedule', icon: 'clock-outline', route: '/scheduleWaste' },
     { title: 'Recycle', icon: 'recycle', route: '/scannerScreen' },
-    { title: 'Tips', icon: 'lightbulb-outline', route: '/tips' },
+    ...(isAdmin
+      ? [{ title: 'Prediction', icon: 'chart-line', route: '/futureWastePrediction' }]
+      : [{ title: 'Tips', icon: 'Tips', route: '/tips' }]),
     { title: 'Recyclers', icon: 'lightbulb-outline', route: '/recyclerMap' },
     ...(isAdmin
       ? [{ title: 'Analytics', icon: 'chart-line', route: '/adminAnalytics' }]
