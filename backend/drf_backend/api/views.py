@@ -25,6 +25,11 @@ from django.db.models import Count, Sum
 from django.db.models import OuterRef, Subquery
 from rest_framework.permissions import IsAdminUser
 from django.utils.dateformat import DateFormat
+from sklearn.linear_model import LinearRegression
+from django.db import connection
+import pandas as pd
+
+
 
 
 
@@ -538,3 +543,50 @@ class MarkPickupCompletedView(APIView):
             return Response({'message': f'Marked as picked up and {points} points added.'})
 
         return Response({'message': 'Already picked up.'})
+
+#FutureWastePredictionView
+class FutureWastePredictionView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Query the database for March and April data
+        query = """
+            SELECT request_date, weight
+            FROM api_pickuprequest
+            WHERE request_date BETWEEN '2025-03-01' AND '2025-04-30'
+        """
+        
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+        # Create a DataFrame from the database results
+        df = pd.DataFrame(result, columns=['request_date', 'weight'])
+        
+        # Data Preprocessing
+        df['request_date'] = pd.to_datetime(df['request_date'])
+        df['days_since_start'] = (df['request_date'] - df['request_date'].min()).dt.days
+        
+        # Prepare X (days_since_start) and y (weight)
+        X = df[['days_since_start']]
+        y = df['weight']
+
+        # Train the Linear Regression model
+        model = LinearRegression()
+        model.fit(X, y)
+
+        # Generate a list of dates in May that are Tuesdays and Fridays
+        may_dates = pd.date_range(start="2025-05-01", end="2025-05-31", freq='D')
+        selected_dates = may_dates[may_dates.weekday.isin([1, 4])]  # 1 = Tuesday, 4 = Friday
+
+        # Calculate 'days_since_start' for each of these selected dates
+        days_since_start = (selected_dates - df['request_date'].min()).days
+        may_predictions = model.predict(days_since_start.values.reshape(-1, 1))
+
+        # Prepare the response
+        prediction_data = []
+        for date, prediction in zip(selected_dates, may_predictions):
+            prediction_data.append({
+                'date': date.strftime('%Y-%m-%d'),
+                'predicted_weight': prediction
+            })
+
+        return Response({"predictions": prediction_data})
