@@ -12,13 +12,17 @@ const HelpPage = () => {
         }}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.heading}>Getting Started 🚀</Text>
+        <Text style={styles.heading}> Features Overview</Text>
 
-        {helpSteps.map((step, index) => (
+        {helpFeatures.map((feature, index) => (
           <View key={index} style={styles.card}>
-            <Text style={styles.stepNumber}>{`Step ${index + 1}`}</Text>
-            <Text style={styles.cardTitle}>{step.title}</Text>
-            <Text style={styles.cardText}>{step.description}</Text>
+            <View style={styles.iconCircle}>
+              <Text style={styles.iconText}>{index + 1}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.cardTitle}>{feature.title}</Text>
+              <Text style={styles.cardText}>{feature.description}</Text>
+            </View>
           </View>
         ))}
 
@@ -30,30 +34,30 @@ const HelpPage = () => {
   );
 };
 
-const helpSteps = [
-  {
-    title: 'Register or Log In',
-    description: 'Create an account or sign in to start tracking and managing your waste efficiently.',
-  },
+const helpFeatures = [
   {
     title: 'Upload Waste Image',
-    description: 'Take or select a photo of your waste. Our AI classifies it into recyclable or organic types.',
+    description: 'Capture or select a photo. Our AI classifies it into recyclable waste categories like plastic, paper, glass, cardboard, metal, and trash. Upload one photo at a time with possibly empty background.',
   },
   {
     title: 'Schedule a Pickup',
-    description: 'Choose waste type, weight, and a convenient time. Pick your location on the map and submit.',
+    description: 'You can schedule only organic waste pickups. Choose weight, location, and a convenient date (Tuesdays and Fridays only).',
   },
   {
     title: 'Earn Eco-Points',
-    description: 'Gain points for every successful pickup. Redeem them later for cashback or rewards.',
+    description: 'Collect points with each successful pickup. Earn additional rewards for recycling efforts.',
   },
   {
-    title: 'Check Tips & Analytics',
-    description: 'Explore eco-tips and view your waste stats to see your impact over time.',
+    title: 'Explore Tips',
+    description: 'Discover eco-friendly habits and waste management advice.',
   },
   {
-    title: 'Mark Pickups as Done',
-    description: 'Staff or admin can complete the pickup by marking requests as picked up.',
+    title: 'View Waste Analytics',
+    description: 'Monitor your waste progress status.',
+  },
+  {
+    title: 'Pickup Management',
+    description: 'Our staff will update the status to "picked up" once your waste has been collected.',
   },
 ];
 
@@ -64,45 +68,54 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   heading: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#111827',
+    marginBottom: 24,
     textAlign: 'center',
   },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    shadowColor: '#888',
+    // shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
   },
-  stepNumber: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginBottom: 4,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+  iconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#E0F2FE',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#0284C7',
   },
   cardTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 6,
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 4,
   },
   cardText: {
     fontSize: 14,
-    color: '#374151',
+    color: '#475569',
     lineHeight: 20,
   },
   footer: {
     fontSize: 14,
     color: '#6B7280',
-    marginTop: 24,
+    marginTop: 30,
     textAlign: 'center',
     fontStyle: 'italic',
   },

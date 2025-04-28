@@ -34,7 +34,7 @@ const GridMenu = () => {
     { title: 'Recycle', icon: 'recycle', route: '/scannerScreen' },
     ...(isAdmin
       ? [{ title: 'Prediction', icon: 'trending-up', route: '/adminFutureWastePrediction' }]
-      : [{ title: 'Tips', icon: 'Tips', route: '/tips' }]),
+      : [{ title: 'Tips', icon: 'lightbulb-outline', route: '/tips' }]),
     { title: 'Recyclers', icon: 'map-marker', route: '/recyclerMap' },
     ...(isAdmin
       ? [{ title: 'Analytics', icon: 'chart-line', route: '/adminAnalytics' }]
@@ -42,7 +42,6 @@ const GridMenu = () => {
       ...(isAdmin
         ? [{ title: 'PickUp ', icon: 'truck', route: '/adminPickupStatusUpdate' }]
         : [{ title: 'Help', icon: 'hand-circle-outline', route: '/help' }]),
-    // { title: 'Help', icon: 'hand-circle-outline', route: '/donate' }
   ];
 
   return (

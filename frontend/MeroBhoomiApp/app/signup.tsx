@@ -16,7 +16,6 @@ import { setUserRegistration } from './services/userRegistrationService';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Stack } from 'expo-router';
 
-
 const { width, height } = Dimensions.get("window");
 
 export default function Signup() {
@@ -25,7 +24,7 @@ export default function Signup() {
         email: "",
         full_name: "",
         date_of_birth: "",
-        tc: false,
+        tc: false, // Terms and Conditions checkbox state
         password: "",
         password2: "",
     });
@@ -33,6 +32,7 @@ export default function Signup() {
     const [loading, setLoading] = useState(false);
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(""); // State for error message
 
     const toggleDatePicker = () => {
         setShowPicker((prev) => !prev);
@@ -67,7 +67,6 @@ export default function Signup() {
         const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{6,}$/;
         return regex.test(password);
     };
-    
 
     const handleSignup = async () => {
         if (!form.email || !form.full_name || !form.date_of_birth || !form.password || !form.password2) {
@@ -84,13 +83,16 @@ export default function Signup() {
             Alert.alert("Error", "Password must be at least 6 characters long with 1 number and 1 special character.");
             return;
         }
+
         if (form.password !== form.password2) {
             Alert.alert("Error", "Passwords do not match!");
             return;
         }
 
-        
-
+        if (!form.tc) {
+            setErrorMessage("You must agree to the Terms and Conditions to proceed."); // Show error message
+            return;
+        }
 
         setLoading(true);
         try {
@@ -108,11 +110,11 @@ export default function Signup() {
 
     return (
         <>
-            <Stack.Screen 
+            <Stack.Screen
                 options={{
-                headerShown: true, 
-                title: 'Sign Up', 
-                }} 
+                    headerShown: true,
+                    title: 'Sign Up',
+                }}
             />
 
             <View style={styles.container}>
@@ -172,7 +174,10 @@ export default function Signup() {
 
                 <View style={styles.tcContainer}>
                     <TouchableOpacity
-                        onPress={() => setForm({ ...form, tc: !form.tc })}
+                        onPress={() => {
+                            setForm({ ...form, tc: !form.tc });
+                            setErrorMessage(""); // Clear error message when toggled
+                        }}
                         style={styles.checkbox}
                     >
                         {form.tc && <Text style={styles.checkboxTick}>✔</Text>}
@@ -180,7 +185,14 @@ export default function Signup() {
                     <Text style={styles.tcText}>I agree to the Terms and Conditions</Text>
                 </View>
 
-                <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
+                {/* Error message for Terms and Conditions */}
+                {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
+                <TouchableOpacity
+                    style={styles.signupButton}
+                    onPress={handleSignup}
+                    disabled={loading}
+                >
                     {loading ? (
                         <ActivityIndicator color="#fff" />
                     ) : (
@@ -188,11 +200,14 @@ export default function Signup() {
                     )}
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.loginRedirect} onPress={() => router.push("/login")}>
+                <TouchableOpacity
+                    style={styles.loginRedirect}
+                    onPress={() => router.push("/login")}
+                >
                     <Text style={styles.loginText}>Already have an account? Login</Text>
                 </TouchableOpacity>
             </View>
-        </>    
+        </>
     );
 }
 
@@ -270,5 +285,11 @@ const styles = StyleSheet.create({
         color: "#2B4B40",
         fontWeight: "600",
         fontSize: width * 0.04,
+    },
+    errorText: {
+        color: "red",
+        fontSize: width * 0.035,
+        marginLeft: width * 0.02,
+        marginTop: height * 0.01,
     },
 });
