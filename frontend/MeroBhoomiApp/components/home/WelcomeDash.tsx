@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: '7%',
+    marginTop: '10%',
     // marginBottom: '-2%'
 
     // backgroundColor: "#ffffff",
