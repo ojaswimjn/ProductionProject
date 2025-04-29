@@ -8,6 +8,8 @@ logger = logging.getLogger(__name__)
 class PickupDayReminderCronJob(CronJobBase):
     RUN_AT_TIMES = ['08:00']
     schedule = Schedule(run_at_times=RUN_AT_TIMES)
+    # schedule = Schedule(run_every_mins=1)
+
     code = 'api.pickup_day_reminder'
 
     def do(self):

@@ -233,33 +233,41 @@ EMAIL_HOST_USER = 'merobhoomi@gmail.com'  # Replace with your email
 EMAIL_HOST_PASSWORD = 'sxqp ztpn sbhw xuke'
 DEFAULT_FROM_EMAIL = 'merobhoomi@gmail.com'
 
+#notification
+TIME_ZONE = 'Asia/Kathmandu' 
+USE_TZ = True 
 
 CRON_CLASSES = [
     'api.cron.PickupDayReminderCronJob',
 ]
 
 CRONJOBS = [
-    ('*/1 * * * *', 'api.cron.PickupDayReminderCronJob'),
+    ('08:00', 'api.cron.PickupDayReminderCronJob'),
 ]
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'console': {
             'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'pickup_reminder_cron.log',
+            'class': 'logging.StreamHandler',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        '': {
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
     },
 }
+
 
 
 
