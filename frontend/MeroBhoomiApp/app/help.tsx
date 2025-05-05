@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     color: '#0284C7',
   },
   cardTitle: {
+    // fontSize: 18,
     fontSize: 18,
     fontWeight: '700',
     color: '#1E293B',
