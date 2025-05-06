@@ -125,13 +125,10 @@ const ScheduleWaste = () => {
       // console.log("reached here")
       setIsSuccess(true); // trigger the form reset
 
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting pickup request:", error);
-      if (error.response && error.response.data && error.response.data.error) {
-        Alert.alert("Error", error.response.data.error);
-      } else {
-        Alert.alert("Error", "Failed to submit pickup request");
-      }    }
+      Alert.alert("Error", "Failed to submit pickup request");
+    }
   };
 
   useEffect(() => {

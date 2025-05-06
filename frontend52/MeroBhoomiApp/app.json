@@ -42,12 +42,6 @@
         }
       ],
       [
-        "react-native-maps",
-        {
-          "iosApiKey": "YOUR_GOOGLE_MAPS_IOS_API_KEY"
-        }
-      ],
-      [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."

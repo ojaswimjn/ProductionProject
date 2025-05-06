@@ -86,7 +86,7 @@ export default function LocationMap() {
       return;
     }
 
-    const apiKey = "712c96789ea74403a35a42a728f96dd5"; //  OpenCage API key
+    const apiKey = "712c96789ea74403a35a42a728f96dd5"; // Replace with your OpenCage API key
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${searchQuery}&key=${apiKey}&language=en&pretty=1`;
 
     try {
