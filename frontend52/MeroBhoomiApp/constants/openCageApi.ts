@@ -1,0 +1,4 @@
+export const OPEN_CAGE_API_KEY = "712c96789ea74403a35a42a728f96dd5";
+export const OPEN_CAGE_API_KEY_REVERSE_GEOCODING = "1c9627e508c747d7a8e8a9fcea75afdc";
+
+

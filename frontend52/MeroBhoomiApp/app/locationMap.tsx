@@ -5,6 +5,7 @@ import MapView, { Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
+import { OPEN_CAGE_API_KEY } from "@/constants/openCageApi";
 
 export default function LocationMap() {
   const router = useRouter();
@@ -86,8 +87,8 @@ export default function LocationMap() {
       return;
     }
 
-    const apiKey = "712c96789ea74403a35a42a728f96dd5"; // Replace with your OpenCage API key
-    const url = `https://api.opencagedata.com/geocode/v1/json?q=${searchQuery}&key=${apiKey}&language=en&pretty=1`;
+    // const apiKey = "712c96789ea74403a35a42a728f96dd5"; //OpenCage API key
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${searchQuery}&key=${OPEN_CAGE_API_KEY}&language=en&pretty=1`;
 
     try {
       const response = await axios.get(url);
