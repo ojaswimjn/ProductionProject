@@ -56,7 +56,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
     class Meta:
         fields = ['old_password', 'new_password', 'new_password2']
 
-#validate password
+    #validate password
     def validate(self, attrs):
         old_password = attrs.get('old_password')  # Retrieve old_password correctly
         password = attrs.get('new_password')
@@ -76,6 +76,13 @@ class UserChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return attrs
+
+
+class UserUpdateProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['full_name', 'date_of_birth']
+
 
 # Image Serializer
 class ImageSerializer(serializers.ModelSerializer):
@@ -117,8 +124,8 @@ class PickUpRequestSerializer(serializers.ModelSerializer):
             weight= attrs.get('weight')
 
             #check if the selected date is full by count or weight
-            if self.is_date_fully_booked(request_date, weight):
-                raise serializers.ValidationError("Selected date is fully booked. Please choose another date.")
+            # if self.is_date_fully_booked(request_date, weight):
+                # raise serializers.ValidationError("Selected date is fully booked. Please choose another date.")
 
             return data
 

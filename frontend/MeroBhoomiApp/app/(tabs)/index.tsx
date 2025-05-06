@@ -5,9 +5,9 @@ import GridMenu from "@/components/home/GridMenu";
 import Header from "@/components/home/Header";
 import WelcomeDash from "@/components/home/WelcomeDash";
 import DataDashboard from "@/components/home/DataDashboard";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerForPushTokenAndSend } from "../usePushToken";
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
 import RecyclableSliderGrid from "@/components/home/RecyclableGrid";
 
 export const { width, height } = Dimensions.get("window"); // Get the screen dimensions
@@ -15,18 +15,18 @@ export const { width, height } = Dimensions.get("window"); // Get the screen dim
 const HomeScreen = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  const tokenGenerator = async ( ) => {
+  const tokenGenerator = async () => {
     try {
       const token = await AsyncStorage.getItem("accessToken");
       setAccessToken(token);
       if (!token) {
-        console.log("token not being generated for expo push")
+        console.log("token not being generated for expo push");
         return;
       }
-    }catch (error) {
+    } catch (error) {
       console.error("Error in token generator in index:", error);
     }
-  }
+  };
   useEffect(() => {
     tokenGenerator();
   }, []);
@@ -43,22 +43,23 @@ const HomeScreen = () => {
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.container}>
-      {/* Fixed Header */}
-      <Header />
+        {/* Fixed Header */}
+        <Header />
 
-      {/* Scrollable Content */}
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-        <WelcomeDash />
-        <GridMenu />
-        <DataDashboard/>
-        <RecyclableSliderGrid/>
+        {/* Scrollable Content */}
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <WelcomeDash />
+          <GridMenu />
+          <DataDashboard />
+          <RecyclableSliderGrid />
 
-
-        {/* <GridMenu /> */}
-        {/* <WelcomeDash /> */}
-
-      </ScrollView>
-    </View>
+          {/* <GridMenu /> */}
+          {/* <WelcomeDash /> */}
+        </ScrollView>
+      </View>
     </>
   );
 };
@@ -67,17 +68,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
-    marginTop: 45
+    marginTop: 45,
   },
   scrollContainer: {
     flexGrow: 1,
     alignItems: "stretch",
     paddingVertical: 20,
-    paddingHorizontal: 16, 
+    paddingHorizontal: 16,
 
     marginTop: 20, //changes herehere
   },
-})
-
+});
 
 export default HomeScreen;

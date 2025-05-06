@@ -1,7 +1,7 @@
 from django.urls import path, include
 from api.views import WasteCategoryViewSet
 from rest_framework import routers
-from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView, WasteItemViewSet, ScheduledWasteSummaryView, MarkPickupCompletedView, FutureWastePredictionView
+from api.views import UserRegistrationView, UserLoginView, UserProfileView, PickupRequestViewSet,UserChangePasswordView, ImageUploadView, WasteItemPredictionView, AvailableDateView, SendOTPView, VerifyOTPAndResetPasswordView, VerifyOTPView, RewardViewSet, SaveExpoTokenView, WasteItemViewSet, ScheduledWasteSummaryView, MarkPickupCompletedView, FutureWastePredictionView, UserUpdateProfileView, OptimizedWasteCollectionRoute
 from django.conf import settings
 from django.conf.urls.static import static
 from api.views import SendTestNotification
@@ -39,7 +39,11 @@ urlpatterns = [
     path('scheduled-waste-summary/', ScheduledWasteSummaryView.as_view(), name='scheduled-waste-summary'),
     path('pickuprequest/<int:pk>/complete/', MarkPickupCompletedView.as_view(), name='mark-pickup-completed'),
 
-    path('future-waste-predict/', FutureWastePredictionView.as_view(), name='future-waste-predict' )
+    path('future-waste-predict/', FutureWastePredictionView.as_view(), name='future-waste-predict' ),
+    path('update-profile/', UserUpdateProfileView.as_view(), name='update-profile'),
+    path('optimized-route/<str:date>/', OptimizedWasteCollectionRoute.as_view(), name='optimized-route'),
+
+
 
 
 

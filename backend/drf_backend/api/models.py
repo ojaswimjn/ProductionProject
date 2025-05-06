@@ -146,8 +146,13 @@ class PickupRequest(models.Model):
         booked_requests = cls.objects.filter(request_date=check_date)
         total_weight = sum(request.weight for request in booked_requests)
         
-        max_weight = 50  # Example: max capacity for a date
+        max_weight = 1000  # Example: max capacity for a date
         return total_weight >= max_weight
+    
+    @classmethod
+    def has_user_exceeded_limit(cls, user, check_date):
+        user_pickups = cls.objects.filter(user_id=user, request_date=check_date).count()
+        return user_pickups >= 3
 
 #PickUp Collection Slot Model
 class PickUpSlot(models.Model):

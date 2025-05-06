@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from .models import  Store, WasteItem, WasteCategory, PickUpSlot, Reward, Image, PickupRequest, Reedemption, ExpoPushToken  
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer ,WasteItemSerializer,  WasteCategorySerializer, StoreSerializer, PickUpSlotSerializer, RewardSerializer, ImageSerializer, PickUpRequestSerializer, ReedemptionSerializer, WasteItemDetailSerializer, ExpoTokenSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserChangePasswordSerializer ,WasteItemSerializer,  WasteCategorySerializer, StoreSerializer, PickUpSlotSerializer, RewardSerializer, ImageSerializer, PickUpRequestSerializer, ReedemptionSerializer, WasteItemDetailSerializer, ExpoTokenSerializer, UserUpdateProfileSerializer
 from .utils import predict_image
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -28,6 +28,9 @@ from django.utils.dateformat import DateFormat
 from sklearn.linear_model import LinearRegression
 from django.db import connection
 import pandas as pd
+from ortools.constraint_solver import routing_enums_pb2
+from ortools.constraint_solver import pywrapcp
+from datetime import datetime
 
 
 
@@ -95,6 +98,19 @@ class UserChangePasswordView(APIView):
         if serializer.is_valid(raise_exception = True):
             return Response({'success': 'Password changed successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
+
+
+class UserUpdateProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [UserRenderer]
+
+    def put(self, request, format=None):  
+        serializer = UserUpdateProfileSerializer(instance=request.user, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'success': 'Profile updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 User = get_user_model()  # ✅ Define User model
 #send reset password mail
@@ -363,6 +379,17 @@ class PickupRequestViewSet(viewsets.ModelViewSet):
     serializer_class = PickUpRequestSerializer
     permission_classes = [IsAuthenticated]  
 
+    def create(self, request, *args, **kwargs):
+        selected_date_str = request.data.get("request_date")
+
+        if PickupRequest.is_date_fully_booked(selected_date_str):
+            return Response({"error": "Pickup date is fully booked."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if PickupRequest.has_user_exceeded_limit(request.user, selected_date_str):
+            return Response({"error": "You have already scheduled 3 pickups today."}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().create(request, *args, **kwargs)
+
     @action(detail=False, methods=['get'], url_path='user/(?P<user_id>[^/.]+)')
     def by_user(self, request, user_id=None):
         if not request.user.is_staff and request.user.id != int(user_id):
@@ -590,3 +617,65 @@ class FutureWastePredictionView(APIView):
             })
 
         return Response({"predictions": prediction_data})
+
+
+#class optimized waste
+def distance(lat1, lon1, lat2, lon2):
+    return ((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2) ** 0.5 * 100000 
+
+# Helper function to compute the optimal route using OR-Tools
+def compute_optimal_route(coords):
+    coords = [(coords[0][0], coords[0][1])] + coords  # Start point (Depot) can be the first pickup or fixed point
+    size = len(coords)
+    
+    dist_matrix = [
+        [distance(*coords[i], *coords[j]) for j in range(size)] for i in range(size)
+    ]
+    
+    manager = pywrapcp.RoutingIndexManager(size, 1, 0)
+    routing = pywrapcp.RoutingModel(manager)
+    
+    # Define a distance callback function
+    def distance_callback(from_idx, to_idx):
+        return int(dist_matrix[manager.IndexToNode(from_idx)][manager.IndexToNode(to_idx)])
+    
+    transit_callback_index = routing.RegisterTransitCallback(distance_callback)
+    routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
+    
+    # Set search parameters and solve the problem
+    search_parameters = pywrapcp.DefaultRoutingSearchParameters()
+    search_parameters.first_solution_strategy = routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
+    
+    solution = routing.SolveWithParameters(search_parameters)
+    
+    # Extract the route from the solution
+    route = []
+    index = routing.Start(0)
+    while not routing.IsEnd(index):
+        route.append(manager.IndexToNode(index))
+        index = solution.Value(routing.NextVar(index))
+    
+    return [coords[i] for i in route]
+
+class OptimizedWasteCollectionRoute(APIView):
+    def get(self, request, date):
+        # Parse the date to filter the pickup requests
+        try:
+            selected_date = datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            return Response({"error": "Invalid date format. Please use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Fetch all pickup requests for the selected date
+        pickups = PickupRequest.objects.filter(request_date=selected_date)
+        
+        if not pickups.exists():
+            return Response({"error": "No pickups scheduled for the selected date."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Prepare coordinates (latitude, longitude) for each pickup
+        coordinates = [(pickup.latitude, pickup.longitude) for pickup in pickups]
+        
+        # Compute the optimized route using OR-Tools
+        optimized_route = compute_optimal_route(coordinates)
+        
+        # Return the optimized route
+        return Response({"optimized_route": optimized_route}, status=status.HTTP_200_OK)
