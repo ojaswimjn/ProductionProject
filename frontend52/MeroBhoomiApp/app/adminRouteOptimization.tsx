@@ -144,7 +144,7 @@ const AdminRouteOptimization = () => {
               <Text style={styles.stopNumber}>Stop {index + 1}:</Text>
               <Text style={styles.address}>{item.formatted}</Text>
               <Text style={styles.coordinates}>
-                Coordinates: {item.lat.toFixed(6)}, {item.lng.toFixed(6)}
+                Coordinates: {item.lat}, {item.lng}
               </Text>
             </View>
           )}

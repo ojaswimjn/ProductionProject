@@ -36,7 +36,7 @@ const GridMenu = () => {
       ? [{ title: 'Prediction', icon: 'trending-up', route: '/adminFutureWastePrediction' }]
       : [{ title: 'Tips', icon: 'lightbulb-outline', route: '/tips' }]),
       ...(isAdmin
-        ? [{ title: 'Route', icon: 'chart-line', route: '/adminRouteOptimization' }]
+        ? [{ title: 'Route', icon: 'map-marker', route: '/adminRouteOptimization' }]
         : [{ title: 'Recyclers', icon: 'map-marker', route: '/recyclerMap' }]),
     ...(isAdmin
       ? [{ title: 'Analytics', icon: 'chart-line', route: '/adminAnalytics' }]

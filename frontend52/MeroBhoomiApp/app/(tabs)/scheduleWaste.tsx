@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { API_BASEURL } from "../authDisplayService";
 import { getUserProfile } from "../services/authDisplayProfile";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -32,6 +33,15 @@ const ScheduleWaste = () => {
   const [userId, setUserId] = useState();
   const [isSuccess, setIsSuccess] = useState(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      setSelectedDate(null);
+      setWeight("");
+      setWasteType("organic");
+      setLatitude(null);
+      setLongitude(null);
+    }, [])
+  );
 
   useEffect(() => {
     if (params.latitude && params.longitude) {
@@ -125,10 +135,13 @@ const ScheduleWaste = () => {
       // console.log("reached here")
       setIsSuccess(true); // trigger the form reset
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting pickup request:", error);
-      Alert.alert("Error", "Failed to submit pickup request");
-    }
+      if (error.response && error.response.data && error.response.data.error) {
+        Alert.alert("Error", error.response.data.error);
+      } else {
+        Alert.alert("Error", "Failed to submit pickup request");
+      }    }
   };
 
   useEffect(() => {
@@ -139,7 +152,7 @@ const ScheduleWaste = () => {
       setLatitude(null);
       setLongitude(null);
   
-      router.replace("/scheduleWaste"); // Reload this page without any params
+      router.replace("/scheduleWaste"); 
 
       setIsSuccess(false); // reset the flag
 

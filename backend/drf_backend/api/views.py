@@ -524,6 +524,7 @@ class ScheduledWasteSummaryView(APIView):
     def get(self, request):
         data = (
             PickupRequest.objects
+            .filter(request_status='Picked up')
             .values('request_date')
             .annotate(total_weight=Sum('weight'))
             .order_by('request_date')
@@ -578,7 +579,8 @@ class FutureWastePredictionView(APIView):
         query = """
             SELECT request_date, weight
             FROM api_pickuprequest
-            WHERE request_date BETWEEN '2025-03-01' AND '2025-04-30'
+            WHERE request_status = 'Picked up'
+            AND request_date BETWEEN '2025-03-01' AND '2025-04-30'
         """
         
         with connection.cursor() as cursor:
