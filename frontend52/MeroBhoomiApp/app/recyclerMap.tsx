@@ -3,7 +3,7 @@ import { View, Alert, Text, StyleSheet, Linking, ActivityIndicator } from "react
 import * as Location from "expo-location";
 
 export default function RecyclerMap() {
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {

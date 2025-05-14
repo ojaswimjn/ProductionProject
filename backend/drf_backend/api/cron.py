@@ -1,7 +1,7 @@
 import logging
 from django_cron import CronJobBase, Schedule
 from datetime import datetime
-from .tasks import send_pickup_day_reminders  # Ensure this import is correct
+from .tasks import send_pickup_day_reminders  
 
 logger = logging.getLogger(__name__)
 

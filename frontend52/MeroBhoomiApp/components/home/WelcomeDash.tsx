@@ -13,7 +13,7 @@ interface UserProfile {
   email: string;
   user_role: string;
   is_active: boolean;
-  // Add other fields if needed
+  
 }
 
 export const { width, height } = Dimensions.get("window"); // Get the screen dimensions

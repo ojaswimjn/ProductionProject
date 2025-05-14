@@ -61,7 +61,7 @@ const ScheduleWaste = () => {
   const fetchAvailableDates = async () => {
     try {
       const response = await axios.get(`${API_BASEURL}/availabledates/`);
-      console.log("Available dates from server:", response.data.available_dates); // Add this to debug
+      console.log("Available dates from server:", response.data.available_dates); 
 
       setAvailableDates(response.data.available_dates);
     } catch (error) {

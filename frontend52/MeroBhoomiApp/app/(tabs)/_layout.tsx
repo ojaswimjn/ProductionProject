@@ -11,7 +11,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useRouter } from 'expo-router';
 import { addNotificationReceivedListener, addNotificationResponseReceivedListener, Subscription } from 'expo-notifications';
 
-// ✅ Setup foreground handler (important!)
+//setup notification permission
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,

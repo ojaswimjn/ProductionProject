@@ -156,7 +156,7 @@ class SendOTPView(APIView):
 #reset password view
 class VerifyOTPAndResetPasswordView(APIView):
     def post (self, request):
-        email = request.data.get('email')  # ✅ Correct
+        email = request.data.get('email')  
         otp = request.data.get('otp')
         new_password = request.data.get('new_password')
         confirm_password = request.data.get('confirm_password')
@@ -415,13 +415,13 @@ class AvailableDateView(APIView):
         try:
             today = date.today()
             available_dates = []        
-            allowed_days = [1, 4]  # 🚀 Only allow pickups on Monday (1) and Thursday (4)
+            allowed_days = [1, 4]  #  allow pickups on Monday (1) and Thursday (4)
 
 
             for i in range(21):  # Check next 3 weeks
                 check_date = today + timedelta(days=i)
-                if check_date.weekday() in allowed_days:  # ✅ Only include allowed days
-                    if not self.is_date_fully_booked(check_date):  # ✅ Now correctly calling the function
+                if check_date.weekday() in allowed_days:  #  Only include allowed days
+                    if not self.is_date_fully_booked(check_date):  # Now correctly calling the function
                         available_dates.append(str(check_date))
 
                 # Log the check date for debugging

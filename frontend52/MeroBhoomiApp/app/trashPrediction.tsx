@@ -142,7 +142,7 @@ export default function TrashPrediction() {
               </Text>
             </View>
             <Image
-              source={require("../assets/images/coins.webp")} // replace with your image path
+              source={require("../assets/images/coins.webp")} 
               style={styles.coinImage}
               resizeMode="contain"
             />
