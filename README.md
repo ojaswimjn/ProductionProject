@@ -32,6 +32,38 @@ Step 5: Create a new Expo app
 Run the command ‘npx create-expo-app@latest’ to create a new Expo project. Name the project as ‘MeroBhoomi’, then npm install will begin to run.
 
 
+![alt text](image-4.png)
+
+
+Step 6: Change the directory in the terminal using ‘cd MeroBhoomi’. Then, start the development server using ‘npm start’.
+Step 7: Run the app in the emulator
+
+![alt text](image-5.png)
+
+Django Rest Framework Setup 
+Step 1: Navigate to the official website of Python and download Python.
+![alt text](image-6.png)
+
+To verify the installation, check the version of Python in the terminal.
+
+        python -version
+
+Step 2: Create a Python virtual environment to keep project dependencies.	
+![alt text](image-7.png)
+
+Step 3: Install Django REST Framework
+Now, activate the virtual environment and install Django REST framework using the command ‘pip install djangorestframework’.
+
+![alt text](image-8.png)
+
+Step 4: Create a new Django Project with the project name as ‘MeroBhoomiBackend’.
+
+![alt text](image-9.png)
+
+Step 5: Finally, create an app for the API using the command below:
+
+![alt text](image-10.png)
+
 
 
 
