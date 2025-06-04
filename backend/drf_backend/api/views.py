@@ -56,7 +56,7 @@ class UserRegistrationView(APIView):
             Reward.objects.create(
                 points=0,  # Default points
                 created_date=timezone.now().date(),
-                reward_status="Pending",  # Set your desired default status
+                reward_status="Pending",  
                 updated_date=timezone.now(),
                 description="Initial reward for registration",
                 user_id=user,
@@ -187,7 +187,7 @@ class VerifyOTPAndResetPasswordView(APIView):
 #reset password view
 class VerifyOTPView(APIView):
     def post (self, request):
-        email = request.data.get('email')  # ✅ Correct
+        email = request.data.get('email') 
         otp = request.data.get('otp')
 
         if not email or not otp :
@@ -208,13 +208,13 @@ class VerifyOTPView(APIView):
 #Image
 class ImageUploadView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)  # Ensure MultiPartParser is included
+    parser_classes = (MultiPartParser, FormParser)  #  MultiPartParser
 
     def post(self, request, format=None):
         # data = request.data.copy()
         data = request.data.dict() if isinstance(request.data, QueryDict) else request.data.copy()
 
-        data['user_id'] = request.user.id  # Ensure user ID is included
+        data['user_id'] = request.user.id  # user ID 
         
         serializer = ImageSerializer(data=data)
 
@@ -274,17 +274,11 @@ class ImageUploadView(APIView):
 
 class WasteItemPredictionView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request, image_id, format=None):
         try:
             image = Image.objects.get(image_id=image_id)
-
             predicted_category_id,accuracy_score = predict_image(image.image_file_url.path)
-
-            
             print(f"Predicted category ID: {predicted_category_id}")
-
-
             try:
                 waste_category = WasteCategory.objects.get(category_id= predicted_category_id)
             except WasteCategory.DoesNotExist:
@@ -292,7 +286,6 @@ class WasteItemPredictionView(APIView):
                     {'error': f'WasteCategory with ID {predicted_category_id} does not exist'},
                     status=status.HTTP_404_NOT_FOUND
                 )
-            
              # Get or create the corresponding WasteItem
             waste_item, created = WasteItem.objects.get_or_create(
                 image_id=image,
@@ -302,7 +295,6 @@ class WasteItemPredictionView(APIView):
                 }
             )
 
-            # If the WasteItem already exists, update its fields
             if not created:
                 waste_item.accuracy_score = accuracy_score
                 waste_item.category_id = waste_category
@@ -402,8 +394,8 @@ class PickupRequestViewSet(viewsets.ModelViewSet):
 class AvailableDateView(APIView):
     def is_date_fully_booked(self, pickup_date):
         """Check if a date is fully booked based on weight or request limit"""
-        max_requests = 10  # Example limit of 10 pickups per day
-        max_weight = 100  # Example total weight limit per day
+        max_requests = 10  
+        max_weight = 100  
 
         pickups = PickupRequest.objects.filter(request_date=pickup_date)
         total_requests = pickups.count()
@@ -415,16 +407,16 @@ class AvailableDateView(APIView):
         try:
             today = date.today()
             available_dates = []        
-            allowed_days = [1, 4]  #  allow pickups on Monday (1) and Thursday (4)
+            allowed_days = [1, 4]  
 
 
             for i in range(21):  # Check next 3 weeks
                 check_date = today + timedelta(days=i)
-                if check_date.weekday() in allowed_days:  #  Only include allowed days
-                    if not self.is_date_fully_booked(check_date):  # Now correctly calling the function
+                if check_date.weekday() in allowed_days:  
+                    if not self.is_date_fully_booked(check_date): 
                         available_dates.append(str(check_date))
 
-                # Log the check date for debugging
+                # Log check date for debugging
                 print(f"Checking availability for date: {check_date}")
                 
             print(f"Available dates: {available_dates}")  # Log available dates
@@ -432,7 +424,6 @@ class AvailableDateView(APIView):
             return Response({"available_dates": available_dates}, status=status.HTTP_200_OK)
         
         except Exception as e:
-            # Log the error if any exception occurs
             print(f"Error in AvailableDateView: {e}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -575,42 +566,32 @@ class MarkPickupCompletedView(APIView):
 #FutureWastePredictionView
 class FutureWastePredictionView(APIView):
     def get(self, request, *args, **kwargs):
-        # Query the database for March and April data
         query = """
-            SELECT request_date, weight
-            FROM api_pickuprequest
-            WHERE request_status = 'Picked up'
-            AND request_date BETWEEN '2025-03-01' AND '2025-04-30'
+            SELECT request_date, weight FROM api_pickuprequest WHERE request_status = 'Picked up' AND request_date BETWEEN '2025-03-01' AND '2025-04-30'
         """
-        
         with connection.cursor() as cursor:
             cursor.execute(query)
             result = cursor.fetchall()
 
-        # Create a DataFrame from the database results
         df = pd.DataFrame(result, columns=['request_date', 'weight'])
         
-        # Data Preprocessing
         df['request_date'] = pd.to_datetime(df['request_date'])
         df['days_since_start'] = (df['request_date'] - df['request_date'].min()).dt.days
         
-        # Prepare X (days_since_start) and y (weight)
+        # X (days_since_start) and y (weight)
         X = df[['days_since_start']]
         y = df['weight']
 
-        # Train the Linear Regression model
+        # Train using Linear Regression model
         model = LinearRegression()
         model.fit(X, y)
 
-        # Generate a list of dates in May that are Tuesdays and Fridays
         may_dates = pd.date_range(start="2025-05-01", end="2025-05-31", freq='D')
         selected_dates = may_dates[may_dates.weekday.isin([1, 4])]  # 1 = Tuesday, 4 = Friday
 
-        # Calculate 'days_since_start' for each of these selected dates
         days_since_start = (selected_dates - df['request_date'].min()).days
         may_predictions = model.predict(days_since_start.values.reshape(-1, 1))
 
-        # Prepare the response
         prediction_data = []
         for date, prediction in zip(selected_dates, may_predictions):
             prediction_data.append({
@@ -625,9 +606,9 @@ class FutureWastePredictionView(APIView):
 def distance(lat1, lon1, lat2, lon2):
     return ((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2) ** 0.5 * 100000 
 
-# Helper function to compute the optimal route using OR-Tools
+# function to compute the optimal route using OR-Tools
 def compute_optimal_route(coords):
-    coords = [(coords[0][0], coords[0][1])] + coords  # Start point (Depot) can be the first pickup or fixed point
+    coords = [(coords[0][0], coords[0][1])] + coords  
     size = len(coords)
     
     dist_matrix = [
@@ -661,23 +642,20 @@ def compute_optimal_route(coords):
 
 class OptimizedWasteCollectionRoute(APIView):
     def get(self, request, date):
-        # Parse the date to filter the pickup requests
+        # Parse date to filter the pickup requests
         try:
             selected_date = datetime.strptime(date, "%Y-%m-%d").date()
         except ValueError:
             return Response({"error": "Invalid date format. Please use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Fetch all pickup requests for the selected date
         pickups = PickupRequest.objects.filter(request_date=selected_date)
         
         if not pickups.exists():
             return Response({"error": "No pickups scheduled for the selected date."}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Prepare coordinates (latitude, longitude) for each pickup
         coordinates = [(pickup.latitude, pickup.longitude) for pickup in pickups]
         
-        # Compute the optimized route using OR-Tools
+        # Compute route using OR-Tools
         optimized_route = compute_optimal_route(coordinates)
         
-        # Return the optimized route
         return Response({"optimized_route": optimized_route}, status=status.HTTP_200_OK)

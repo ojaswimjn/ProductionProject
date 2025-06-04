@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASEURL } from "../authDisplayService";
 import { getUserProfile } from "../services/authDisplayProfile"
 import ChangePassword from "../profile/ChangePassword"
-import SavedAddress from "../profile/SavedAddress"
+// import SavedAddress from "../profile/SavedAddress"
 import PointsAndReedemption from "../profile/PointsAndReedemption"
 import Logout from "../profile/Logout"
 // import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
