@@ -1,8 +1,13 @@
 finalyearproject2025
 # AI-Based Mobile Application for Waste Management and Recycling 
-This project aims to design an organic waste management system that integrates AI to identify recyclable waste types and suggest recycling methods.
+An organic waste management system that integrates AI to identify recyclable waste types and suggest recycling methods.
 
 # Installation Guideline
+React Native and Expo Setup 
+Step 1: Install Node.js and npm
+Navigate to the official website of Node.js to download the LTS (Long-Term Support) version of Node.js. Download the prebuilt architecture for Windows.
+
+> ![alt text](image.png)
 
 
 
