@@ -1,4 +1,4 @@
-finalyearproject2025
+Dissertation
 # AI-Based Mobile Application for Waste Management and Recycling 
 An organic waste management system that integrates AI to identify recyclable waste types and suggest recycling methods.
 
